@@ -1,5 +1,15 @@
+import os
+
 from . import db
 from .models import Station
+
+# Public origin that serves app/static (logos live in app/static/logos/<station-id>.png).
+PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "https://rizfm.pkasemer.com").rstrip("/")
+
+
+def logo_url_for(station_id):
+    return f"{PUBLIC_BASE_URL}/static/logos/{station_id}.png"
+
 
 STATIONS = [
     {
@@ -94,8 +104,24 @@ STATIONS = [
     }
 ]
 
+def backfill_logos():
+    """Give seeded stations that have no logo yet their bundled logo.
+
+    Never overwrites a logoUrl that was set manually through the API.
+    """
+    changed = False
+    for item in STATIONS:
+        station = db.session.get(Station, item["id"])
+        if station and not station.logo_url:
+            station.logo_url = logo_url_for(item["id"])
+            changed = True
+    if changed:
+        db.session.commit()
+
+
 def seed_database():
     if db.session.query(Station).count() > 0:
+        backfill_logos()
         return
     for item in STATIONS:
         db.session.add(Station(
@@ -103,7 +129,8 @@ def seed_database():
             city=item.get("city"), genres=item.get("genres", []),
             languages=item.get("languages", []), stream_url=item.get("streamUrl"),
             stream_type=item.get("streamType"), bitrate=item.get("bitrate"),
-            website=item.get("website"), logo_url=item.get("logoUrl"),
+            website=item.get("website"),
+            logo_url=item.get("logoUrl") or logo_url_for(item["id"]),
             is_featured=item.get("isFeatured", False), is_active=item.get("isActive", True)
         ))
     db.session.commit()
