@@ -2,7 +2,7 @@ import os
 from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-
+from flask import render_template
 db = SQLAlchemy()
 
 def create_app():
@@ -16,6 +16,17 @@ def create_app():
 
     from .routes import api
     app.register_blueprint(api, url_prefix="/api/v1")
+
+    @app.route("/")
+    def index():
+        from datetime import datetime
+        station_count = Station.query.filter_by(is_active=True).count()
+
+        return render_template(
+            "index.html",
+            station_count=station_count,
+            current_year=datetime.now().year
+        )
 
     @app.get("/health")
     def health():

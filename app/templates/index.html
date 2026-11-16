@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RizFM API — Uganda Radio API</title>
+
+    <meta
+        name="description"
+        content="RizFM API provides access to Uganda's online radio stations, streams and station metadata."
+    >
+
+    <style>
+        :root {
+            --bg: #f7f7f5;
+            --surface: #ffffff;
+            --text: #171717;
+            --muted: #777;
+            --line: #deded9;
+            --accent: #c62828;
+            --accent-dark: #991f1f;
+            --green: #39785b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Helvetica Neue",
+                Helvetica,
+                Arial,
+                sans-serif;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .page {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        /* Header */
+
+        header {
+            height: 82px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+        }
+
+        .brand-mark {
+            width: 28px;
+            height: 28px;
+            border: 1.5px solid var(--text);
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .brand-mark::after {
+            content: "";
+            position: absolute;
+            width: 7px;
+            height: 7px;
+            background: var(--accent);
+            border-radius: 50%;
+            top: 9px;
+            left: 9px;
+        }
+
+        .brand-name {
+            font-size: 17px;
+        }
+
+        .brand-label {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        nav a {
+            transition: color 0.2s ease;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero */
+
+        .hero {
+            min-height: 570px;
+            display: grid;
+            grid-template-columns: 1.4fr 0.8fr;
+            gap: 80px;
+            align-items: center;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--muted);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            margin-bottom: 28px;
+        }
+
+        .eyebrow-line {
+            width: 28px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        h1 {
+            font-size: clamp(52px, 7vw, 92px);
+            line-height: 0.92;
+            letter-spacing: -0.07em;
+            font-weight: 500;
+            max-width: 760px;
+        }
+
+        h1 span {
+            color: var(--accent);
+        }
+
+        .hero-description {
+            margin-top: 34px;
+            max-width: 560px;
+            color: #666;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 34px;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 0 20px;
+            border: 1px solid var(--text);
+            font-size: 12px;
+            letter-spacing: 0.03em;
+            transition: all 0.2s ease;
+        }
+
+        .button.primary {
+            background: var(--text);
+            color: white;
+        }
+
+        .button.primary:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .button.secondary:hover {
+            background: white;
+        }
+
+        /* Japanese visual */
+
+        .hero-aside {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .circle {
+            width: min(280px, 65vw);
+            aspect-ratio: 1;
+            border: 1px solid #d3d3ce;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .circle::before,
+        .circle::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .circle::before {
+            inset: 28px;
+            border: 1px solid #e0e0dc;
+        }
+
+        .circle::after {
+            width: 72px;
+            height: 72px;
+            background: var(--accent);
+            opacity: 0.95;
+        }
+
+        .japanese-character {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-family: serif;
+            font-size: 15px;
+            color: #888;
+        }
+
+        .circle-label {
+            position: absolute;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: #888;
+        }
+
+        /* Stats */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .stat {
+            min-height: 140px;
+            padding: 30px 24px;
+            border-right: 1px solid var(--line);
+        }
+
+        .stat:first-child {
+            padding-left: 0;
+        }
+
+        .stat:last-child {
+            border-right: none;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            letter-spacing: -0.04em;
+            font-weight: 500;
+        }
+
+        .stat-label {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* API section */
+
+        .api-section {
+            padding: 100px 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 40px;
+            margin-bottom: 44px;
+        }
+
+        .section-number {
+            color: var(--accent);
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            margin-bottom: 12px;
+        }
+
+        h2 {
+            font-size: 38px;
+            line-height: 1;
+            letter-spacing: -0.05em;
+            font-weight: 500;
+        }
+
+        .section-description {
+            max-width: 400px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .endpoint-list {
+            border-top: 1px solid var(--line);
+        }
+
+        .endpoint {
+            display: grid;
+            grid-template-columns: 80px 1fr 180px;
+            align-items: center;
+            min-height: 76px;
+            border-bottom: 1px solid var(--line);
+            transition: background 0.2s ease;
+        }
+
+        .endpoint:hover {
+            background: var(--surface);
+        }
+
+        .method {
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .endpoint-path {
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        .endpoint-description {
+            color: var(--muted);
+            font-size: 12px;
+            text-align: right;
+        }
+
+        /* Code */
+
+        .code-section {
+            padding-bottom: 100px;
+        }
+
+        .code-card {
+            background: #171717;
+            color: #e8e8e8;
+            padding: 32px;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-label {
+            position: absolute;
+            top: 18px;
+            right: 22px;
+            color: #777;
+            font-family: monospace;
+            font-size: 10px;
+        }
+
+        pre {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .code-green {
+            color: #9ac7a9;
+        }
+
+        .code-red {
+            color: #df8e8e;
+        }
+
+        /* Footer */
+
+        footer {
+            border-top: 1px solid var(--line);
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--green);
+            border-radius: 50%;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 800px) {
+            .page {
+                padding: 0 20px;
+            }
+
+            nav {
+                gap: 14px;
+            }
+
+            nav a:nth-child(2) {
+                display: none;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 50px;
+                padding: 80px 0;
+            }
+
+            .hero-aside {
+                justify-content: flex-start;
+            }
+
+            .circle {
+                width: 210px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .stat {
+                border-right: none;
+                border-bottom: 1px solid var(--line);
+                padding-left: 0;
+            }
+
+            .stat:last-child {
+                border-bottom: none;
+            }
+
+            .section-header {
+                display: block;
+            }
+
+            .section-description {
+                margin-top: 20px;
+            }
+
+            .endpoint {
+                grid-template-columns: 65px 1fr;
+                padding: 18px 0;
+            }
+
+            .endpoint-description {
+                grid-column: 2;
+                text-align: left;
+                margin-top: 4px;
+            }
+
+            footer {
+                flex-direction: column;
+                justify-content: center;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 25px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- Header -->
+    <header>
+        <a href="/" class="brand">
+            <div class="brand-mark"></div>
+
+            <div>
+                <div class="brand-name">RizFM</div>
+                <div class="brand-label">API</div>
+            </div>
+        </a>
+
+        <nav>
+            <a href="/api/v1/stations">Stations</a>
+            <a href="/api/v1/stations/featured">Featured</a>
+            <a href="/health">Health</a>
+        </nav>
+    </header>
+
+
+    <!-- Hero -->
+    <main>
+
+        <section class="hero">
+
+            <div>
+                <div class="eyebrow">
+                    <span class="eyebrow-line"></span>
+                    Uganda Radio Infrastructure
+                </div>
+
+                <h1>
+                    Radio,<br>
+                    <span>connected.</span>
+                </h1>
+
+                <p class="hero-description">
+                    RizFM provides a simple REST API for discovering Uganda's
+                    online radio stations, stream URLs and station metadata.
+                    Built for mobile applications and modern radio experiences.
+                </p>
+
+                <div class="actions">
+                    <a
+                        class="button primary"
+                        href="/api/v1/stations"
+                    >
+                        View stations
+                    </a>
+
+                    <a
+                        class="button secondary"
+                        href="/health"
+                    >
+                        API status
+                    </a>
+                </div>
+            </div>
+
+
+            <div class="hero-aside">
+
+                <div class="circle">
+                    <span class="japanese-character">音</span>
+
+                    <div class="circle-label">
+                        Listen · Discover · Connect
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Stats -->
+        <section class="stats">
+
+            <div class="stat">
+                <div class="stat-value">
+                    {{ station_count }}
+                </div>
+
+                <div class="stat-label">
+                    Active stations
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-value">
+                    REST
+                </div>
+
+                <div class="stat-label">
+                    API architecture
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-value">
+                    v1
+                </div>
+
+                <div class="stat-label">
+                    API version
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- Endpoints -->
+        <section class="api-section">
+
+            <div class="section-header">
+
+                <div>
+                    <div class="section-number">01 / ENDPOINTS</div>
+                    <h2>Simple by design.</h2>
+                </div>
+
+                <p class="section-description">
+                    Everything you need to discover and work with Uganda's
+                    online radio stations through a small, predictable API.
+                </p>
+
+            </div>
+
+
+            <div class="endpoint-list">
+
+                <a class="endpoint" href="/api/v1/stations">
+
+                    <span class="method">GET</span>
+
+                    <span class="endpoint-path">
+                        /api/v1/stations
+                    </span>
+
+                    <span class="endpoint-description">
+                        List stations
+                    </span>
+
+                </a>
+
+
+                <a
+                    class="endpoint"
+                    href="/api/v1/stations/featured"
+                >
+
+                    <span class="method">GET</span>
+
+                    <span class="endpoint-path">
+                        /api/v1/stations/featured
+                    </span>
+
+                    <span class="endpoint-description">
+                        Featured stations
+                    </span>
+
+                </a>
+
+
+                <a
+                    class="endpoint"
+                    href="/api/v1/stations/1"
+                >
+
+                    <span class="method">GET</span>
+
+                    <span class="endpoint-path">
+                        /api/v1/stations/:id
+                    </span>
+
+                    <span class="endpoint-description">
+                        Station details
+                    </span>
+
+                </a>
+
+
+                <a
+                    class="endpoint"
+                    href="/health"
+                >
+
+                    <span class="method">GET</span>
+
+                    <span class="endpoint-path">
+                        /health
+                    </span>
+
+                    <span class="endpoint-description">
+                        Service health
+                    </span>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- Quick Start -->
+        <section class="code-section">
+
+            <div class="section-header">
+
+                <div>
+                    <div class="section-number">02 / QUICK START</div>
+                    <h2>Start listening.</h2>
+                </div>
+
+                <p class="section-description">
+                    Fetch the station catalogue with one request.
+                </p>
+
+            </div>
+
+
+            <div class="code-card">
+
+                <span class="code-label">GET /stations</span>
+
+<pre><span class="code-green">$</span> curl https://rizfm.pkasemer.com/api/v1/stations
+
+{
+  <span class="code-red">"stations"</span>: [
+    {
+      <span class="code-red">"id"</span>: "capital-fm",
+      <span class="code-red">"name"</span>: "Capital FM Uganda",
+      <span class="code-red">"frequency"</span>: "91.3 FM",
+      <span class="code-red">"city"</span>: "Kampala",
+      <span class="code-red">"streamUrl"</span>: "http://capitalfm.cloudrad.io/stream"
+    }
+  ]
+}</pre>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <div>
+            © {{ current_year if current_year else "2026" }} RizFM
+        </div>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            API operational
+        </div>
+
+    </footer>
+
+</div>
+
+</body>
+</html>
