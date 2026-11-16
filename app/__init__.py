@@ -3,6 +3,8 @@ from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask import render_template
+from .models import Station
+
 db = SQLAlchemy()
 
 def create_app():
