@@ -167,8 +167,12 @@ def test_international_stations_have_a_country_and_can_be_filtered():
 
     uk = client.get("/api/v1/stations?country=united kingdom").json["data"]
     assert [s["id"] for s in uk] == ["heart-uk"]
-    ug = client.get("/api/v1/stations?country=Uganda&limit=100").json
-    assert ug["pagination"]["total"] == client.get("/api/v1/stations?limit=1").json["pagination"]["total"] - 2
+    from app.seed import STATIONS
+
+    international = [s for s in STATIONS if s.get("country", "Uganda") != "Uganda"]
+    ug = client.get("/api/v1/stations?country=Uganda&limit=1").json
+    everything = client.get("/api/v1/stations?limit=1").json
+    assert ug["pagination"]["total"] == everything["pagination"]["total"] - len(international)
 
 
 def test_station_country_can_be_set_through_the_api():
@@ -202,3 +206,23 @@ def test_existing_database_without_country_column_is_upgraded(tmp_path, monkeypa
     assert capital["name"] == "My renamed Capital"  # existing edits are kept
     assert capital["country"] == "Uganda"  # old rows are backfilled
     assert client.get("/api/v1/stations/heart-uk").json["country"] == "United Kingdom"  # new stations arrive
+
+
+def test_us_hip_hop_and_tennessee_country_stations():
+    client = create_app().test_client()
+    us = {s["id"]: s for s in client.get("/api/v1/stations?country=United States&limit=100").json["data"]}
+
+    hip_hop = {"hot-97", "power-105", "power-106", "real-923", "wjlb"}
+    tennessee_country = {"wsm-650", "big-98", "wcyq-wolf", "kix-106"}
+    assert hip_hop | tennessee_country | {"k-love"} == set(us)
+
+    for station_id in hip_hop:
+        assert "Hip-Hop" in us[station_id]["genres"], station_id
+    for station_id in tennessee_country:
+        assert "Country" in us[station_id]["genres"], station_id
+    for station in us.values():
+        assert station["streamUrl"] and station["logoUrl"], station["id"]
+
+    # The genre filter finds them too.
+    country = client.get("/api/v1/stations?genre=Country&limit=100").json["data"]
+    assert tennessee_country <= {s["id"] for s in country}

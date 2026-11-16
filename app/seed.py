@@ -190,6 +190,62 @@ STATIONS = [
         "genres": ["Christian", "Contemporary", "Worship"], "languages": ["English"],
         "streamUrl": "https://maestro.emfcdn.com/stream_for/k-love/airable/aac", "streamType": "aac",
         "bitrate": 64, "website": "https://www.klove.com", "isFeatured": True
+    },
+    # --- United States: hip-hop and rap ---
+    {
+        "id": "hot-97", "name": "Hot 97", "frequency": "97.1 FM", "city": "New York", "country": "United States",
+        "genres": ["Hip-Hop", "Rap", "R&B"], "languages": ["English"],
+        "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/WQHTFMAAC.aac",
+        "streamType": "aac", "bitrate": 64, "website": "https://www.hot97.com"
+    },
+    {
+        "id": "power-105", "name": "Power 105.1", "frequency": "105.1 FM", "city": "New York", "country": "United States",
+        "genres": ["Hip-Hop", "Rap", "R&B"], "languages": ["English"],
+        "streamUrl": "https://stream.revma.ihrhls.com/zc1481", "streamType": "aac",
+        "website": "https://power1051.iheart.com"
+    },
+    {
+        "id": "power-106", "name": "Power 106", "frequency": "105.9 FM", "city": "Los Angeles", "country": "United States",
+        "genres": ["Hip-Hop", "Rap", "R&B"], "languages": ["English"],
+        "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/KPWRAAC.aac",
+        "streamType": "aac", "bitrate": 32, "website": "https://www.power106.com"
+    },
+    {
+        "id": "real-923", "name": "Real 92.3", "frequency": "92.3 FM", "city": "Los Angeles", "country": "United States",
+        "genres": ["Hip-Hop", "Rap", "R&B"], "languages": ["English"],
+        "streamUrl": "https://stream.revma.ihrhls.com/zc181", "streamType": "aac",
+        "website": "https://real923la.iheart.com"
+    },
+    {
+        "id": "wjlb", "name": "97.9 WJLB", "frequency": "97.9 FM", "city": "Detroit", "country": "United States",
+        "genres": ["Hip-Hop", "R&B"], "languages": ["English"],
+        "streamUrl": "https://stream.revma.ihrhls.com/zc1141", "streamType": "aac",
+        "website": "https://wjlbdetroit.iheart.com"
+    },
+    # --- United States: country music from Tennessee ---
+    {
+        "id": "wsm-650", "name": "WSM 650", "frequency": "650 AM", "city": "Nashville", "country": "United States",
+        "genres": ["Country", "Classic Country"], "languages": ["English"],
+        "streamUrl": "http://stream01048.westreamradio.com/wsm-am-mp3", "streamType": "mp3",
+        "bitrate": 64, "website": "https://www.wsmonline.com"
+    },
+    {
+        "id": "big-98", "name": "The Big 98", "frequency": "97.9 FM", "city": "Nashville", "country": "United States",
+        "genres": ["Country"], "languages": ["English"],
+        "streamUrl": "https://stream.revma.ihrhls.com/zc2157", "streamType": "aac",
+        "website": "https://thebig98.iheart.com"
+    },
+    {
+        "id": "wcyq-wolf", "name": "100.3 The Wolf", "frequency": "100.3 FM", "city": "Knoxville", "country": "United States",
+        "genres": ["Country"], "languages": ["English"],
+        "streamUrl": "https://stream.rcs.revma.com/xhgtr8hfz7uvv", "streamType": "aac",
+        "website": "https://www.knoxvillewolf.com"
+    },
+    {
+        "id": "kix-106", "name": "Kix 106", "frequency": "105.9 FM", "city": "Memphis", "country": "United States",
+        "genres": ["Country"], "languages": ["English"],
+        "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/WGKXFMAAC.aac",
+        "streamType": "aac", "bitrate": 48, "website": "https://www.kix106.com"
     }
 ]
 
