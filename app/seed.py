@@ -101,6 +101,82 @@ STATIONS = [
         "genres": ["News", "Talk", "Music"], "languages": ["English", "Lusoga"],
         "streamUrl": "https://stream.zeno.fm/xna2aad7gc9uv", "streamType": "mp3",
         "bitrate": 112, "website": "https://busogaone.com"
+    },
+    # --- Added later. Every stream below was probed and returned real audio data. ---
+    {
+        "id": "nrg-radio", "name": "NRG Radio Uganda", "frequency": "106.5 FM", "city": "Kampala",
+        "genres": ["Afrobeats", "Pop", "Entertainment"], "languages": ["English"],
+        "streamUrl": "https://dc4.serverse.com/proxy/nrgugstream/stream", "streamType": "mp3",
+        "bitrate": 128, "website": "https://nrgug.radio", "isFeatured": True
+    },
+    {
+        "id": "kiis-fm", "name": "KIIS FM", "frequency": "100.9 FM", "city": "Kampala",
+        "genres": ["Pop", "Top 40", "Entertainment"], "languages": ["English"],
+        "streamUrl": "http://14867.cloudrad.io:9224/live", "streamType": "mp3",
+        "bitrate": 128, "isFeatured": True
+    },
+    {
+        "id": "mega-fm", "name": "Mega FM Gulu", "frequency": "102.1 FM", "city": "Gulu",
+        "genres": ["Music", "News", "Entertainment"], "languages": ["Luo", "English"],
+        "streamUrl": "https://s2.myradiostream.com:5757/;", "streamType": "mp3",
+        "bitrate": 128, "website": "https://megafmug.com", "isFeatured": True
+    },
+    {
+        "id": "cbs-fm", "name": "CBS FM", "frequency": "88.8 FM", "city": "Kampala",
+        "genres": ["News", "Talk", "Culture"], "languages": ["Luganda"],
+        "streamUrl": "https://s5.voscast.com:9905/EMMANDUSO", "streamType": "mp3",
+        "bitrate": 64, "website": "https://cbsfm.ug", "isFeatured": True
+    },
+    {
+        "id": "bukedde-fm", "name": "Bukedde FM", "frequency": "100.5 FM", "city": "Kampala",
+        "genres": ["News", "Talk", "Music"], "languages": ["Luganda"],
+        "streamUrl": "https://stream.hydeinnovations.com:2020/stream/bukeddefm/stream",
+        "streamType": "mp3", "bitrate": 128, "website": "https://www.bukedde.co.ug"
+    },
+    {
+        "id": "dembe-fm", "name": "Dembe FM", "frequency": "90.4 FM", "city": "Kampala",
+        "genres": ["Music", "Pop", "News"], "languages": ["English", "Luganda"],
+        "streamUrl": "http://radio.dembefm.ug:8000/stream", "streamType": "mp3", "bitrate": 128
+    },
+    {
+        "id": "radio-maria", "name": "Radio Maria Uganda", "frequency": "101.8 FM", "city": "Kampala",
+        "genres": ["Christian", "Talk"], "languages": ["English", "Luganda"],
+        "streamUrl": "https://dreamsiteradiocp2.com/proxy/rmuganda2?mp=/stream",
+        "streamType": "aac", "bitrate": 64
+    },
+    {
+        "id": "record-fm", "name": "Record FM", "frequency": "97.7 FM", "city": "Kampala",
+        "genres": ["Music", "Entertainment", "Sports"], "languages": ["Luganda", "English"],
+        "streamUrl": "https://a7.asurahosting.com/listen/record_fm_97.7/radio.mp3",
+        "streamType": "mp3", "bitrate": 192
+    },
+    {
+        "id": "baba-fm", "name": "Baba FM", "frequency": "87.7 FM", "city": "Jinja",
+        "genres": ["Music", "News", "Talk"], "languages": ["Lusoga", "English"],
+        "streamUrl": "https://stream.zeno.fm/ns28rp24dkhvv", "streamType": "mp3", "bitrate": 128
+    },
+    {
+        "id": "christ-fm", "name": "Christ FM", "frequency": "91.6 FM", "city": "Kampala",
+        "genres": ["Christian", "Talk"], "languages": ["English", "Luganda"],
+        "streamUrl": "http://5.135.154.69:15664/;", "streamType": "mp3", "bitrate": 128
+    },
+    {
+        "id": "voice-of-teso", "name": "Voice of Teso", "frequency": "88.4 FM", "city": "Soroti",
+        "genres": ["News", "Talk", "Music"], "languages": ["Ateso", "English"],
+        "streamUrl": "https://s46.webcastserver.com:12368/listen.mp3", "streamType": "mp3",
+        "bitrate": 192
+    },
+    {
+        "id": "open-gate-fm", "name": "Open Gate FM", "frequency": "103.2 FM", "city": "Mbale",
+        "genres": ["News", "Community", "Music"], "languages": ["English"],
+        "streamUrl": "http://139.162.195.139:8010/radio.mp3", "streamType": "mp3",
+        "bitrate": 128, "website": "http://www.opengatefmmbale.com"
+    },
+    {
+        "id": "radio-buddu", "name": "Radio Buddu", "frequency": "98.8 FM", "city": "Masaka",
+        "genres": ["News", "Talk", "Music"], "languages": ["Luganda"],
+        "streamUrl": "https://dc4.serverse.com/proxy/ccmxrgub/stream", "streamType": "mp3",
+        "bitrate": 64
     }
 ]
 
@@ -120,10 +196,15 @@ def backfill_logos():
 
 
 def seed_database():
-    if db.session.query(Station).count() > 0:
-        backfill_logos()
-        return
+    """Insert any seed station that is not in the database yet, then fill missing logos.
+
+    Existing rows are never modified (apart from an empty logo), so edits made through
+    the API survive restarts, and stations added to STATIONS later reach existing databases.
+    """
+    existing = {station_id for (station_id,) in db.session.query(Station.id).all()}
     for item in STATIONS:
+        if item["id"] in existing:
+            continue
         db.session.add(Station(
             id=item["id"], name=item["name"], frequency=item.get("frequency"),
             city=item.get("city"), genres=item.get("genres", []),
@@ -134,3 +215,4 @@ def seed_database():
             is_featured=item.get("isFeatured", False), is_active=item.get("isActive", True)
         ))
     db.session.commit()
+    backfill_logos()

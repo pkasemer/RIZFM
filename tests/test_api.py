@@ -46,6 +46,41 @@ def test_backfill_keeps_custom_logos():
         assert db.session.get(Station, "xfm").logo_url == "https://example.com/custom.png"
 
 
+def test_requested_stations_are_present():
+    app = create_app()
+    client = app.test_client()
+    for station_id, name in [("nrg-radio", "NRG"), ("kiis-fm", "KIIS"), ("mega-fm", "Mega FM Gulu")]:
+        station = client.get(f"/api/v1/stations/{station_id}").json
+        assert name in station["name"]
+        assert station["streamUrl"]
+        assert station["logoUrl"]
+
+
+def test_seed_adds_missing_stations_without_touching_existing_ones():
+    from app import db
+    from app.models import Station
+    from app.seed import STATIONS, seed_database
+
+    app = create_app()
+    with app.app_context():
+        db.session.delete(db.session.get(Station, "cbs-fm"))
+        db.session.get(Station, "nrg-radio").name = "Renamed through the API"
+        db.session.commit()
+
+        seed_database()
+
+        assert db.session.query(Station).count() == len(STATIONS)
+        assert db.session.get(Station, "cbs-fm") is not None
+        assert db.session.get(Station, "nrg-radio").name == "Renamed through the API"
+
+
+def test_station_ids_are_unique():
+    from app.seed import STATIONS
+
+    ids = [s["id"] for s in STATIONS]
+    assert len(ids) == len(set(ids))
+
+
 def test_stations():
     app = create_app()
     client = app.test_client()
