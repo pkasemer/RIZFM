@@ -6,6 +6,7 @@ class Station(db.Model):
     name = db.Column(db.String(200), nullable=False)
     frequency = db.Column(db.String(50))
     city = db.Column(db.String(100))
+    country = db.Column(db.String(100), default="Uganda")
     genres = db.Column(db.JSON, default=list)
     languages = db.Column(db.JSON, default=list)
     stream_url = db.Column(db.Text, nullable=True)
@@ -27,6 +28,7 @@ class Station(db.Model):
             "name": self.name,
             "frequency": self.frequency,
             "city": self.city,
+            "country": self.country or "Uganda",
             "genres": self.genres or [],
             "languages": self.languages or [],
             "streamUrl": self.stream_url,

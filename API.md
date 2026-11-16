@@ -1,6 +1,6 @@
 # RizFM API
 
-RizFM API is a REST API for discovering and streaming online radio stations in Uganda.
+RizFM API is a REST API for discovering and streaming online radio stations. The catalogue is built around Ugandan stations, with a few international favourites.
 
 ## Base URL
 
@@ -80,6 +80,7 @@ GET /api/v1/stations
 | `search` | string | No | — | Search by station name or city |
 | `genre` | string | No | — | Filter by genre |
 | `city` | string | No | — | Filter by city |
+| `country` | string | No | — | Filter by country, e.g. `Uganda`, `United Kingdom` |
 | `featured` | boolean | No | — | Filter featured stations |
 | `active` | boolean | No | — | Filter active stations |
 
@@ -95,6 +96,12 @@ curl https://rizfm.pkasemer.com/api/v1/stations
 
 ```bash
 curl "https://rizfm.pkasemer.com/api/v1/stations?search=capital"
+```
+
+### Filter by country
+
+```bash
+curl "https://rizfm.pkasemer.com/api/v1/stations?country=United%20Kingdom"
 ```
 
 ### Filter by city
@@ -143,6 +150,7 @@ curl "https://rizfm.pkasemer.com/api/v1/stations?city=Kampala&genre=Music&featur
       "name": "Capital FM Uganda",
       "frequency": "91.3 FM",
       "city": "Kampala",
+      "country": "Uganda",
       "genres": [
         "Pop",
         "Adult Contemporary",
@@ -197,6 +205,7 @@ curl https://rizfm.pkasemer.com/api/v1/stations/capital-fm
   "name": "Capital FM Uganda",
   "frequency": "91.3 FM",
   "city": "Kampala",
+  "country": "Uganda",
   "genres": [
     "Pop",
     "Adult Contemporary",
@@ -259,6 +268,7 @@ curl https://rizfm.pkasemer.com/api/v1/stations/featured
       "name": "Capital FM Uganda",
       "frequency": "91.3 FM",
       "city": "Kampala",
+      "country": "Uganda",
       "genres": [
         "Pop",
         "Adult Contemporary",
@@ -406,6 +416,7 @@ curl -X POST \
     "name": "Example FM",
     "frequency": "100.0 FM",
     "city": "Kampala",
+    "country": "Uganda",
     "genres": ["Music"],
     "languages": ["English"],
     "streamUrl": "https://example.com/stream",
@@ -426,6 +437,7 @@ curl -X POST \
   "name": "Example FM",
   "frequency": "100.0 FM",
   "city": "Kampala",
+  "country": "Uganda",
   "genres": [
     "Music"
   ],
@@ -485,6 +497,7 @@ curl -X PUT \
   "name": "Example FM",
   "frequency": "100.0 FM",
   "city": "Kampala",
+  "country": "Uganda",
   "genres": [
     "Music"
   ],
@@ -570,7 +583,8 @@ The standard station object contains the following fields.
 | `id` | string | Unique station identifier |
 | `name` | string | Station name |
 | `frequency` | string/null | FM frequency |
-| `city` | string/null | Station location |
+| `city` | string/null | Station city |
+| `country` | string | Station country. Defaults to `Uganda` |
 | `genres` | array | Station genres |
 | `languages` | array | Broadcast languages |
 | `streamUrl` | string/null | Direct online stream URL |

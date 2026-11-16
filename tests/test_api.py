@@ -150,3 +150,55 @@ def test_legal_pages_cover_the_image_cache():
     client = create_app().test_client()
     assert "Clear image cache" in client.get("/privacy").get_data(as_text=True)
     assert "Clear image cache" in client.get("/delete-data").get_data(as_text=True)
+
+
+def test_international_stations_have_a_country_and_can_be_filtered():
+    client = create_app().test_client()
+
+    heart = client.get("/api/v1/stations/heart-uk").json
+    assert heart["country"] == "United Kingdom"
+    assert heart["streamUrl"] and heart["logoUrl"]
+
+    klove = client.get("/api/v1/stations/k-love").json
+    assert klove["country"] == "United States"
+
+    # Everything that is not explicitly international is Ugandan.
+    assert client.get("/api/v1/stations/capital-fm").json["country"] == "Uganda"
+
+    uk = client.get("/api/v1/stations?country=united kingdom").json["data"]
+    assert [s["id"] for s in uk] == ["heart-uk"]
+    ug = client.get("/api/v1/stations?country=Uganda&limit=100").json
+    assert ug["pagination"]["total"] == client.get("/api/v1/stations?limit=1").json["pagination"]["total"] - 2
+
+
+def test_station_country_can_be_set_through_the_api():
+    client = create_app().test_client()
+    created = client.post("/api/v1/stations", json={"id": "x-fm", "name": "X FM", "country": "Kenya"})
+    assert created.status_code == 201 and created.json["country"] == "Kenya"
+    assert client.post("/api/v1/stations", json={"id": "y-fm", "name": "Y FM"}).json["country"] == "Uganda"
+    assert client.put("/api/v1/stations/x-fm", json={"country": "Tanzania"}).json["country"] == "Tanzania"
+
+
+def test_existing_database_without_country_column_is_upgraded(tmp_path, monkeypatch):
+    import sqlite3
+
+    db_file = tmp_path / "old.db"
+    conn = sqlite3.connect(db_file)
+    # The schema as it was before the country column existed, with one user-edited station.
+    conn.execute(
+        "CREATE TABLE station (id VARCHAR(100) PRIMARY KEY, name VARCHAR(200) NOT NULL, frequency VARCHAR(50), "
+        "city VARCHAR(100), genres JSON, languages JSON, stream_url TEXT, stream_type VARCHAR(50), bitrate INTEGER, "
+        "website TEXT, logo_url TEXT, is_featured BOOLEAN, is_active BOOLEAN, stream_reachable BOOLEAN, "
+        "last_checked DATETIME, created_at DATETIME, updated_at DATETIME)"
+    )
+    conn.execute("INSERT INTO station (id, name, is_active) VALUES ('capital-fm', 'My renamed Capital', 1)")
+    conn.commit()
+    conn.close()
+
+    monkeypatch.setenv("DATABASE_URL", f"sqlite:///{db_file}")
+    client = create_app().test_client()
+
+    capital = client.get("/api/v1/stations/capital-fm").json
+    assert capital["name"] == "My renamed Capital"  # existing edits are kept
+    assert capital["country"] == "Uganda"  # old rows are backfilled
+    assert client.get("/api/v1/stations/heart-uk").json["country"] == "United Kingdom"  # new stations arrive

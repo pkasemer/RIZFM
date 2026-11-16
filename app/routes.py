@@ -16,6 +16,7 @@ def list_stations():
     search = request.args.get("search")
     genre = request.args.get("genre")
     city = request.args.get("city")
+    country = request.args.get("country")
     featured = request.args.get("featured")
     active = request.args.get("active")
 
@@ -27,6 +28,9 @@ def list_stations():
 
     if city:
         query = query.filter(Station.city.ilike(city))
+
+    if country:
+        query = query.filter(Station.country.ilike(country))
 
     if genre:
         query = query.filter(Station.genres.contains([genre]))
@@ -78,6 +82,7 @@ def create_station():
         name=data["name"],
         frequency=data.get("frequency"),
         city=data.get("city"),
+        country=data.get("country") or "Uganda",
         genres=data.get("genres", []),
         languages=data.get("languages", []),
         stream_url=data.get("streamUrl"),
@@ -100,7 +105,7 @@ def update_station(station_id):
 
     data = request.get_json(silent=True) or {}
     mapping = {
-        "name": "name", "frequency": "frequency", "city": "city",
+        "name": "name", "frequency": "frequency", "city": "city", "country": "country",
         "genres": "genres", "languages": "languages",
         "streamUrl": "stream_url", "streamType": "stream_type",
         "bitrate": "bitrate", "website": "website", "logoUrl": "logo_url",

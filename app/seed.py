@@ -177,6 +177,19 @@ STATIONS = [
         "genres": ["News", "Talk", "Music"], "languages": ["Luganda"],
         "streamUrl": "https://dc4.serverse.com/proxy/ccmxrgub/stream", "streamType": "mp3",
         "bitrate": 64
+    },
+    # --- International favourites (every other station defaults to country "Uganda"). ---
+    {
+        "id": "heart-uk", "name": "Heart UK", "frequency": "96-107 FM", "country": "United Kingdom",
+        "genres": ["Pop", "Adult Contemporary", "Hits"], "languages": ["English"],
+        "streamUrl": "https://media-ssl.musicradio.com/HeartUKMP3", "streamType": "mp3",
+        "bitrate": 128, "website": "https://www.heart.co.uk", "isFeatured": True
+    },
+    {
+        "id": "k-love", "name": "K-LOVE", "country": "United States",
+        "genres": ["Christian", "Contemporary", "Worship"], "languages": ["English"],
+        "streamUrl": "https://maestro.emfcdn.com/stream_for/k-love/airable/aac", "streamType": "aac",
+        "bitrate": 64, "website": "https://www.klove.com", "isFeatured": True
     }
 ]
 
@@ -207,7 +220,8 @@ def seed_database():
             continue
         db.session.add(Station(
             id=item["id"], name=item["name"], frequency=item.get("frequency"),
-            city=item.get("city"), genres=item.get("genres", []),
+            city=item.get("city"), country=item.get("country", "Uganda"),
+            genres=item.get("genres", []),
             languages=item.get("languages", []), stream_url=item.get("streamUrl"),
             stream_type=item.get("streamType"), bitrate=item.get("bitrate"),
             website=item.get("website"),
