@@ -1,0 +1,14 @@
+services:
+  radio-api:
+    build: .
+    container_name: uganda-radio-api
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_URL: sqlite:////app/data/radio.db
+    volumes:
+      - radio-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  radio-data:
