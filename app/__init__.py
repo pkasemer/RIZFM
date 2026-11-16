@@ -20,6 +20,14 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = db_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+    # Shown on the public privacy / data-deletion pages.
+    app.config["APP_NAME"] = os.getenv("APP_NAME", "SOFIZ FM")
+    app.config["PRIVACY_OPERATOR"] = os.getenv("PRIVACY_OPERATOR_NAME", app.config["APP_NAME"])
+    app.config["PRIVACY_CONTACT_EMAIL"] = os.getenv("PRIVACY_CONTACT_EMAIL", "").strip()
+    app.config["PUBLIC_BASE_URL"] = os.getenv(
+        "PUBLIC_BASE_URL", "https://rizfm.pkasemer.com"
+    ).rstrip("/")
+
     CORS(app)
     db.init_app(app)
 
@@ -29,6 +37,10 @@ def create_app():
     # Register API routes
     from .routes import api
     app.register_blueprint(api, url_prefix="/api/v1")
+
+    # Public pages required for store submission: /privacy and /delete-data
+    from .pages import pages
+    app.register_blueprint(pages)
 
     @app.route("/")
     def index():

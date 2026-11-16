@@ -533,6 +533,34 @@ curl -X DELETE \
 
 ---
 
+# Privacy and Data Deletion
+
+Public pages (HTML, not part of `/api/v1`) used for App Store and Google Play submission:
+
+| Method | Page | Use it for |
+|---|---|---|
+| `GET` | `/privacy` (alias `/privacy-policy`) | **Privacy Policy URL** in App Store Connect and Google Play Console |
+| `GET` | `/delete-data` (alias `/data-deletion`) | **Data deletion URL** in the Google Play Data safety form |
+
+```text
+https://rizfm.pkasemer.com/privacy
+https://rizfm.pkasemer.com/delete-data
+```
+
+The app has no user accounts and the API stores no personal data, so there is no server-side
+user data to delete. The pages explain what is stored on the device and how to remove it.
+
+Configure the text with environment variables (see `.env.example`):
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `PRIVACY_CONTACT_EMAIL` | empty | Contact address shown on both pages. **Set this before submitting.** |
+| `PRIVACY_OPERATOR_NAME` | `SOFIZ FM` | Publisher name shown in the policy |
+| `APP_NAME` | `SOFIZ FM` | App name shown in the policy |
+| `PUBLIC_BASE_URL` | `https://rizfm.pkasemer.com` | Public origin of this service |
+
+---
+
 # Station Object
 
 The standard station object contains the following fields.

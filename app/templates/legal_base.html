@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} — {{ app_name }}</title>
+    <meta name="description" content="{% block description %}{% endblock %}">
+    <meta name="robots" content="index,follow">
+
+    <style>
+        :root {
+            --bg: #f7f7f5;
+            --surface: #ffffff;
+            --text: #171717;
+            --muted: #666;
+            --line: #deded9;
+            --accent: #c62828;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #141414;
+                --surface: #1d1d1d;
+                --text: #ededed;
+                --muted: #a0a0a0;
+                --line: #333;
+                --accent: #ef5350;
+            }
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        a { color: var(--accent); }
+
+        .page { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 72px;
+            border-bottom: 1px solid var(--line);
+            font-size: 14px;
+        }
+
+        header .brand { color: var(--text); font-weight: 700; text-decoration: none; letter-spacing: -0.02em; }
+        header nav { display: flex; gap: 20px; }
+        header nav a { color: var(--muted); text-decoration: none; }
+        header nav a:hover, header nav a[aria-current="page"] { color: var(--accent); }
+
+        main { padding: 48px 0 72px; }
+
+        h1 { font-size: clamp(30px, 6vw, 42px); line-height: 1.1; letter-spacing: -0.04em; font-weight: 600; }
+        .updated { margin-top: 10px; color: var(--muted); font-size: 13px; }
+        .lead { margin-top: 24px; font-size: 18px; }
+
+        h2 { margin-top: 40px; font-size: 20px; letter-spacing: -0.02em; font-weight: 600; }
+        p, ul, ol { margin-top: 12px; }
+        ul, ol { padding-left: 22px; }
+        li { margin-top: 6px; }
+
+        .callout {
+            margin-top: 24px;
+            padding: 18px 20px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-left: 3px solid var(--accent);
+        }
+
+        table { width: 100%; margin-top: 16px; border-collapse: collapse; font-size: 15px; }
+        th, td { text-align: left; vertical-align: top; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); }
+        th { color: var(--muted); font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+        footer {
+            border-top: 1px solid var(--line);
+            padding: 28px 0;
+            color: var(--muted);
+            font-size: 13px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 24px;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <header>
+        <a class="brand" href="/">{{ app_name }}</a>
+        <nav>
+            <a href="/privacy" {% if request.path in ("/privacy", "/privacy-policy") %}aria-current="page"{% endif %}>Privacy</a>
+            <a href="/delete-data" {% if request.path in ("/delete-data", "/data-deletion") %}aria-current="page"{% endif %}>Delete data</a>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <span>© {{ current_year }} {{ operator }}</span>
+        <span><a href="/privacy">Privacy policy</a> · <a href="/delete-data">Delete your data</a></span>
+    </footer>
+</div>
+</body>
+</html>

@@ -6,6 +6,10 @@ services:
       - "5000:5000"
     environment:
       DATABASE_URL: sqlite:////app/data/radio.db
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-https://rizfm.pkasemer.com}
+      APP_NAME: ${APP_NAME:-SOFIZ FM}
+      PRIVACY_OPERATOR_NAME: ${PRIVACY_OPERATOR_NAME:-SOFIZ FM}
+      PRIVACY_CONTACT_EMAIL: ${PRIVACY_CONTACT_EMAIL:-}
     volumes:
       - radio-data:/app/data
     restart: unless-stopped

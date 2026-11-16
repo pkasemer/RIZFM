@@ -88,3 +88,37 @@ def test_stations():
     assert response.status_code == 200
     assert "data" in response.json
     assert len(response.json["data"]) > 0
+
+
+def test_privacy_and_delete_data_pages_are_public():
+    app = create_app()
+    client = app.test_client()
+    for path, heading in [
+        ("/privacy", "Privacy Policy"),
+        ("/privacy-policy", "Privacy Policy"),
+        ("/delete-data", "Delete your data"),
+        ("/data-deletion", "Delete your data"),
+    ]:
+        response = client.get(path)
+        assert response.status_code == 200, path
+        assert response.mimetype == "text/html"
+        assert heading in response.get_data(as_text=True)
+
+
+def test_legal_pages_show_contact_email_only_when_configured():
+    app = create_app()
+    app.config["PRIVACY_CONTACT_EMAIL"] = ""
+    client = app.test_client()
+    html = client.get("/privacy").get_data(as_text=True)
+    assert "mailto:" not in html
+    assert "support contact listed" in html
+
+    app.config["PRIVACY_CONTACT_EMAIL"] = "privacy@example.com"
+    for path in ("/privacy", "/delete-data"):
+        assert "mailto:privacy@example.com" in client.get(path).get_data(as_text=True)
+
+
+def test_home_page_links_to_legal_pages():
+    html = create_app().test_client().get("/").get_data(as_text=True)
+    assert 'href="/privacy"' in html
+    assert 'href="/delete-data"' in html

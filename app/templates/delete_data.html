@@ -1,0 +1,60 @@
+{% extends "legal_base.html" %}
+
+{% block title %}Delete Your Data{% endblock %}
+{% block description %}How to delete the data {{ app_name }} stores. There are no accounts; everything the app saves is on your device and you can remove it yourself.{% endblock %}
+
+{% block content %}
+<h1>Delete your data</h1>
+<p class="updated">Last updated: {{ updated }}</p>
+
+<p class="lead">
+    {{ app_name }} has no accounts, so there is no account to delete. The only data the app saves
+    is stored on your own device, and you can remove it yourself in a few seconds.
+</p>
+
+<div class="callout">
+    <strong>Nothing is stored about you on our servers.</strong>
+    We do not collect your name, email, phone number, location or listening history, so there is
+    no personal profile for us to delete. See the <a href="/privacy">privacy policy</a> for details.
+</div>
+
+<h2>Delete your listening history</h2>
+<ol>
+    <li>Open the {{ app_name }} app.</li>
+    <li>Go to the <strong>Settings</strong> tab.</li>
+    <li>Under <strong>Data</strong>, tap <strong>Clear listening history</strong> and confirm.</li>
+</ol>
+<p>This removes the list of stations you have played, including the “resume last station” memory.</p>
+
+<h2>Delete everything the app has stored</h2>
+<p>
+    Removing the app deletes all data it saved on your device, including your listening history and
+    your settings.
+</p>
+<ul>
+    <li><strong>iPhone / iPad:</strong> press and hold the app icon → <em>Remove App</em> → <em>Delete App</em>.</li>
+    <li><strong>Android:</strong> <em>Settings → Apps → {{ app_name }} → Storage → Clear storage</em> to erase the data and keep the app, or uninstall the app.</li>
+</ul>
+
+<h2>Connection logs</h2>
+<p>
+    When the app loads the station list, our hosting infrastructure may briefly keep standard
+    connection logs (such as an IP address and request time) for security and troubleshooting. These
+    are not tied to an account or a name. If you would like us to look for and delete log entries
+    associated with your IP address, contact us with your approximate IP address and the date and
+    time range, and we will delete what we hold and confirm back to you.
+</p>
+
+<h2>Radio stations</h2>
+<p>
+    Audio streams come directly from each radio station’s own servers. We cannot delete information
+    held by those stations; please contact the station if you have a request about their records.
+</p>
+
+<h2>Contact</h2>
+{% if contact_email %}
+<p>To make a deletion request or ask a question: <a href="mailto:{{ contact_email }}?subject=Data%20deletion%20request">{{ contact_email }}</a></p>
+{% else %}
+<p>To make a deletion request or ask a question, use the support contact listed on the {{ app_name }} page in the App Store or Google Play.</p>
+{% endif %}
+{% endblock %}
