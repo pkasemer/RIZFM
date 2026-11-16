@@ -28,6 +28,22 @@ def create_app():
         "PUBLIC_BASE_URL", "https://rizfm.pkasemer.com"
     ).rstrip("/")
 
+    # Versions shown on the landing page. Keep APP_VERSION in step with app.json in the mobile app.
+    app.config["APP_VERSION"] = os.getenv("APP_VERSION", "1.0.0")
+    app.config["API_VERSION"] = "v1"
+
+    @app.context_processor
+    def inject_site_values():
+        """Values every page template (base.html) needs."""
+        return {
+            "app_name": app.config["APP_NAME"],
+            "operator": app.config["PRIVACY_OPERATOR"],
+            "base_url": app.config["PUBLIC_BASE_URL"],
+            "app_version": app.config["APP_VERSION"],
+            "api_version": app.config["API_VERSION"],
+            "current_year": datetime.now().year,
+        }
+
     CORS(app)
     db.init_app(app)
 
@@ -50,8 +66,7 @@ def create_app():
 
         return render_template(
             "index.html",
-            station_count=station_count,
-            current_year=datetime.now().year
+            station_count=station_count
         )
 
     @app.get("/health")

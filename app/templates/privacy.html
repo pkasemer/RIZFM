@@ -1,109 +1,160 @@
-{% extends "legal_base.html" %}
+{% extends "base.html" %}
 
-{% block title %}Privacy Policy{% endblock %}
+{% block title %}Privacy Policy — {{ app_name }}{% endblock %}
 {% block description %}How {{ app_name }} handles your information: no accounts, no tracking, no ads. Listening history and settings stay on your device.{% endblock %}
+{% block og_title %}Privacy Policy — {{ app_name }}{% endblock %}
 
 {% block content %}
-<h1>Privacy Policy</h1>
-<p class="updated">Last updated: {{ updated }}</p>
+<article class="doc">
 
-<p class="lead">
-    {{ app_name }} is an online radio player for stations in Uganda. It does not need an account,
-    does not show ads and does not use analytics or tracking tools. The short version: your
-    listening history and settings stay on your own device.
-</p>
+    <div class="eyebrow">
+        <span class="eyebrow-line"></span>
+        Legal
+    </div>
 
-<div class="callout">
-    <strong>In summary</strong>
-    <ul>
-        <li>No sign-up, no name, no email address and no phone number is collected by the app.</li>
-        <li>We do not sell, rent or share personal information, and we do not build advertising profiles.</li>
-        <li>Your listening history and settings are stored only on your device and are never uploaded to us.</li>
-    </ul>
-</div>
+    <h1>Privacy <span>Policy</span></h1>
+    <p class="doc-meta">Last updated {{ updated }}</p>
 
-<h2>Who we are</h2>
-<p>
-    {{ app_name }} is published by {{ operator }} (“we”, “us”). This policy covers the {{ app_name }}
-    mobile app and the station directory service it connects to at
-    <a href="{{ base_url }}">{{ base_url }}</a>.
-</p>
+    <p class="doc-lead">
+        {{ app_name }} is an online radio player for stations in Uganda. It does not need an account,
+        does not show ads and does not use analytics or tracking tools. The short version: your
+        listening history and settings stay on your own device.
+    </p>
 
-<h2>Information stored on your device</h2>
-<p>The app saves the following on your phone so it can work the way you left it. None of it is sent to us.</p>
-<table>
-    <thead><tr><th>What</th><th>Why</th></tr></thead>
-    <tbody>
-        <tr><td>Listening history: the last stations you played (up to 30) and when you last played each</td><td>To show “recently played” and to resume your last station if you turn that on</td></tr>
-        <tr><td>App settings: theme, background playback, silent-mode playback, haptics, resume on launch</td><td>To remember your preferences</td></tr>
-    </tbody>
-</table>
-<p>
-    You can remove your listening history at any time from <em>Settings → Data → Clear listening
-    history</em>. Uninstalling the app removes everything it stored. See
-    <a href="/delete-data">how to delete your data</a>.
-</p>
+    <div class="doc-callout">
+        <strong>In summary</strong>
+        <ul>
+            <li>No sign-up, name, email address or phone number is collected by the app.</li>
+            <li>We do not sell, rent or share personal information, and we do not build advertising profiles.</li>
+            <li>Your listening history, settings and saved logos are stored only on your device and are never uploaded to us.</li>
+        </ul>
+    </div>
 
-<h2>Information our servers receive</h2>
-<p>
-    When the app loads the list of stations, it makes a request to our server. Like any internet
-    request, this includes your IP address and basic technical details such as the time of the
-    request and your app or device type. We use this only to deliver the station list and to keep the
-    service running and secure. The station directory is the same for every user: our service does
-    not store which stations you listen to, and does not link requests to you as a person.
-</p>
-<p>
-    Our hosting infrastructure may keep short-lived standard connection logs for security and
-    troubleshooting. We do not use them for advertising, profiling or analytics.
-</p>
+    <section class="doc-section">
+        <div class="section-number">01</div>
+        <h2>Who we are</h2>
+        <p>
+            {{ app_name }} is published by {{ operator }} (“we”, “us”). This policy covers the {{ app_name }}
+            mobile app and the station directory service it connects to at
+            <a href="{{ base_url }}">{{ base_url }}</a>.
+        </p>
+    </section>
 
-<h2>Radio streams are provided by the stations</h2>
-<p>
-    When you play a station, your device connects directly to that station’s own streaming server,
-    not to us. As with any streaming service, that server can see your IP address and the type of
-    device or app requesting the stream. Each station’s own privacy practices apply to that
-    connection. If you tap a station’s website link, it opens in your browser and that website’s
-    policy applies.
-</p>
-<p>
-    Some stations only offer an unencrypted (HTTP) stream. Audio from those stations is not
-    encrypted in transit, which is why the app allows these connections for media playback.
-</p>
+    <section class="doc-section">
+        <div class="section-number">02</div>
+        <h2>Information stored on your device</h2>
+        <p>The app saves the following on your phone so it can work the way you left it. None of it is sent to us.</p>
+        <table>
+            <thead><tr><th>What</th><th>Why</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td>Listening history: the last stations you played (up to 30) and when you last played each</td>
+                    <td>To show your recent stations and to resume your last station if you turn that on</td>
+                </tr>
+                <tr>
+                    <td>App settings: appearance, playback options, sleep timer options, haptics, resume on launch</td>
+                    <td>To remember your preferences</td>
+                </tr>
+                <tr>
+                    <td>Saved station logos (image cache), and the colours the app picks from them</td>
+                    <td>So logos load instantly and are not downloaded again, and to tint the player to match the station</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>
+            You can remove your listening history from <strong>Settings → Data → Clear listening history</strong>
+            and your saved logos from <strong>Settings → Storage → Clear image cache</strong>. Uninstalling the
+            app removes everything it stored. See <a href="/delete-data">how to delete your data</a>.
+        </p>
+        <p>
+            On iPhone, the optional Siri and Shortcuts feature runs on your device through Apple’s Shortcuts
+            app. We do not receive anything from it.
+        </p>
+    </section>
 
-<h2>Permissions the app uses</h2>
-<ul>
-    <li><strong>Internet access</strong> to load stations and play streams.</li>
-    <li><strong>Background playback / foreground service</strong> so audio keeps playing when the screen is off or you switch apps (you can turn this off in Settings).</li>
-    <li><strong>Notifications</strong> (Android) to show the playback controls while a station is playing.</li>
-    <li><strong>Vibration</strong> for optional haptic feedback (you can turn this off in Settings).</li>
-</ul>
-<p>The app does not access your location, contacts, photos, camera or microphone.</p>
+    <section class="doc-section">
+        <div class="section-number">03</div>
+        <h2>Information our servers receive</h2>
+        <p>
+            When the app loads the list of stations or station logos, it makes a request to our server. Like
+            any internet request, this includes your IP address and basic technical details such as the time of
+            the request and your app or device type. We use this only to deliver the station list and logos and
+            to keep the service running and secure. The station directory is the same for every user: our
+            service does not store which stations you listen to, and does not link requests to you as a person.
+        </p>
+        <p>
+            Our hosting infrastructure may keep short-lived standard connection logs for security and
+            troubleshooting. We do not use them for advertising, profiling or analytics.
+        </p>
+    </section>
 
-<h2>Children</h2>
-<p>
-    {{ app_name }} does not knowingly collect personal information from anyone, including children.
-    Because the app collects none, there is nothing to remove from a child’s use of it.
-</p>
+    <section class="doc-section">
+        <div class="section-number">04</div>
+        <h2>Radio streams come from the stations</h2>
+        <p>
+            When you play a station, your device connects directly to that station’s own streaming server,
+            not to us. As with any streaming service, that server can see your IP address and the type of
+            device or app requesting the stream. Each station’s own privacy practices apply to that
+            connection. If you tap a station’s website link, it opens in your browser and that website’s
+            policy applies.
+        </p>
+        <p>
+            Some stations only offer an unencrypted (HTTP) stream. Audio from those stations is not
+            encrypted in transit, which is why the app allows these connections for media playback.
+        </p>
+    </section>
 
-<h2>Your choices and rights</h2>
-<p>
-    Because we do not hold personal information about you, there is generally nothing for us to
-    access, correct or delete. You control the data on your device through the steps on our
-    <a href="/delete-data">delete your data</a> page. If you believe we hold information about you,
-    or you have any privacy question, contact us and we will respond and act as required by the data
-    protection laws that apply.
-</p>
+    <section class="doc-section">
+        <div class="section-number">05</div>
+        <h2>Permissions the app uses</h2>
+        <ul>
+            <li><strong>Internet access</strong> to load stations and play streams.</li>
+            <li><strong>Background playback / foreground service</strong> so audio keeps playing when the screen is off or you switch apps (you can turn this off in Settings).</li>
+            <li><strong>Notifications</strong> (Android) to show the playback controls while a station is playing.</li>
+            <li><strong>Vibration</strong> for optional haptic feedback (you can turn this off in Settings).</li>
+        </ul>
+        <p>The app does not access your location, contacts, photos, camera or microphone.</p>
+    </section>
 
-<h2>Changes to this policy</h2>
-<p>
-    If we change how the app handles information, we will update this page and the “last updated”
-    date above. Material changes will also be reflected in the app’s store listing.
-</p>
+    <section class="doc-section">
+        <div class="section-number">06</div>
+        <h2>Children</h2>
+        <p>
+            {{ app_name }} does not knowingly collect personal information from anyone, including children.
+            Because the app collects none, there is nothing to remove from a child’s use of it.
+        </p>
+    </section>
 
-<h2>Contact</h2>
-{% if contact_email %}
-<p>Questions or requests: <a href="mailto:{{ contact_email }}">{{ contact_email }}</a></p>
-{% else %}
-<p>Questions or requests: please use the support contact listed on the {{ app_name }} page in the App Store or Google Play.</p>
-{% endif %}
+    <section class="doc-section">
+        <div class="section-number">07</div>
+        <h2>Your choices and rights</h2>
+        <p>
+            Because we do not hold personal information about you, there is generally nothing for us to
+            access, correct or delete. You control the data on your device through the steps on our
+            <a href="/delete-data">delete your data</a> page. If you believe we hold information about you,
+            or you have any privacy question, contact us and we will respond and act as required by the data
+            protection laws that apply.
+        </p>
+    </section>
+
+    <section class="doc-section">
+        <div class="section-number">08</div>
+        <h2>Changes to this policy</h2>
+        <p>
+            If we change how the app handles information, we will update this page and the “last updated”
+            date above. Material changes will also be reflected in the app’s store listing.
+        </p>
+    </section>
+
+    <section class="doc-section">
+        <div class="section-number">09</div>
+        <h2>Contact</h2>
+        {% if contact_email %}
+        <p>Questions or requests: <a href="mailto:{{ contact_email }}">{{ contact_email }}</a></p>
+        {% else %}
+        <p>Questions or requests: please use the support contact listed on the {{ app_name }} page in the App Store or Google Play.</p>
+        {% endif %}
+    </section>
+
+</article>
 {% endblock %}

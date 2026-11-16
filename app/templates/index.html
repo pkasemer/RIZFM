@@ -1,772 +1,573 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <title>RizFM API — Uganda Radio API</title>
+{% block title %}{{ app_name }} — Live Ugandan radio{% endblock %}
+{% block description %}{{ app_name }} is an app for listening to live Ugandan radio stations, with a clean, minimal design inspired by Japanese and anime aesthetics. Also a simple REST API for Uganda's online radio stations.{% endblock %}
+{% block og_title %}{{ app_name }} — Live Ugandan radio{% endblock %}
 
-    <meta
-        name="description"
-        content="RizFM API provides access to Uganda's online radio stations, streams and station metadata."
-    >
+{% block content %}
 
-    <style>
-        :root {
-            --bg: #f7f7f5;
-            --surface: #ffffff;
-            --text: #171717;
-            --muted: #777;
-            --line: #deded9;
-            --accent: #c62828;
-            --accent-dark: #991f1f;
-            --green: #39785b;
-        }
+<!-- Hero -->
+<section class="hero">
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    <div>
+        <div class="eyebrow">
+            <span class="eyebrow-line"></span>
+            Live Ugandan radio
+        </div>
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "Helvetica Neue",
-                Helvetica,
-                Arial,
-                sans-serif;
-            min-height: 100vh;
-            line-height: 1.6;
-        }
+        <h1>
+            Uganda,<br>
+            <span>on air.</span>
+        </h1>
 
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
+        <p class="hero-description">
+            {{ app_name }} is an app for listening to live Ugandan radio stations,
+            with a clean, minimal design inspired by Japanese and anime aesthetics.
+            Pick a station, press play, and let it keep going.
+        </p>
 
-        .page {
-            max-width: 1180px;
-            margin: 0 auto;
-            padding: 0 32px;
-        }
+        <div class="actions">
+            <a class="button primary" href="#features">
+                Explore the app
+            </a>
 
-        /* Header */
+            <a class="button secondary" href="#api">
+                Developer API
+            </a>
+        </div>
+    </div>
 
-        header {
-            height: 82px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--line);
-        }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 700;
-            letter-spacing: -0.03em;
-        }
+    <div class="hero-aside">
 
-        .brand-mark {
-            width: 28px;
-            height: 28px;
-            border: 1.5px solid var(--text);
-            border-radius: 50%;
-            position: relative;
-        }
+        <div class="circle">
+            <span class="japanese-character">音</span>
 
-        .brand-mark::after {
-            content: "";
-            position: absolute;
-            width: 7px;
-            height: 7px;
-            background: var(--accent);
-            border-radius: 50%;
-            top: 9px;
-            left: 9px;
-        }
-
-        .brand-name {
-            font-size: 17px;
-        }
-
-        .brand-label {
-            color: var(--muted);
-            font-size: 12px;
-            font-weight: 400;
-            letter-spacing: 0.04em;
-        }
-
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 28px;
-            font-size: 13px;
-            color: #555;
-        }
-
-        nav a {
-            transition: color 0.2s ease;
-        }
-
-        nav a:hover {
-            color: var(--accent);
-        }
-
-        /* Hero */
-
-        .hero {
-            min-height: 570px;
-            display: grid;
-            grid-template-columns: 1.4fr 0.8fr;
-            gap: 80px;
-            align-items: center;
-            border-bottom: 1px solid var(--line);
-        }
-
-        .eyebrow {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--muted);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.16em;
-            margin-bottom: 28px;
-        }
-
-        .eyebrow-line {
-            width: 28px;
-            height: 1px;
-            background: var(--accent);
-        }
-
-        h1 {
-            font-size: clamp(52px, 7vw, 92px);
-            line-height: 0.92;
-            letter-spacing: -0.07em;
-            font-weight: 500;
-            max-width: 760px;
-        }
-
-        h1 span {
-            color: var(--accent);
-        }
-
-        .hero-description {
-            margin-top: 34px;
-            max-width: 560px;
-            color: #666;
-            font-size: 16px;
-            line-height: 1.8;
-        }
-
-        .actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 34px;
-        }
-
-        .button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 44px;
-            padding: 0 20px;
-            border: 1px solid var(--text);
-            font-size: 12px;
-            letter-spacing: 0.03em;
-            transition: all 0.2s ease;
-        }
-
-        .button.primary {
-            background: var(--text);
-            color: white;
-        }
-
-        .button.primary:hover {
-            background: var(--accent);
-            border-color: var(--accent);
-        }
-
-        .button.secondary:hover {
-            background: white;
-        }
-
-        /* Japanese visual */
-
-        .hero-aside {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .circle {
-            width: min(280px, 65vw);
-            aspect-ratio: 1;
-            border: 1px solid #d3d3ce;
-            border-radius: 50%;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .circle::before,
-        .circle::after {
-            content: "";
-            position: absolute;
-            border-radius: 50%;
-        }
-
-        .circle::before {
-            inset: 28px;
-            border: 1px solid #e0e0dc;
-        }
-
-        .circle::after {
-            width: 72px;
-            height: 72px;
-            background: var(--accent);
-            opacity: 0.95;
-        }
-
-        .japanese-character {
-            position: absolute;
-            top: 20px;
-            right: 25px;
-            font-family: serif;
-            font-size: 15px;
-            color: #888;
-        }
-
-        .circle-label {
-            position: absolute;
-            bottom: 28px;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.18em;
-            color: #888;
-        }
-
-        /* Stats */
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            border-bottom: 1px solid var(--line);
-        }
-
-        .stat {
-            min-height: 140px;
-            padding: 30px 24px;
-            border-right: 1px solid var(--line);
-        }
-
-        .stat:first-child {
-            padding-left: 0;
-        }
-
-        .stat:last-child {
-            border-right: none;
-        }
-
-        .stat-value {
-            font-size: 32px;
-            letter-spacing: -0.04em;
-            font-weight: 500;
-        }
-
-        .stat-label {
-            margin-top: 5px;
-            color: var(--muted);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        /* API section */
-
-        .api-section {
-            padding: 100px 0;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: end;
-            gap: 40px;
-            margin-bottom: 44px;
-        }
-
-        .section-number {
-            color: var(--accent);
-            font-size: 11px;
-            letter-spacing: 0.14em;
-            margin-bottom: 12px;
-        }
-
-        h2 {
-            font-size: 38px;
-            line-height: 1;
-            letter-spacing: -0.05em;
-            font-weight: 500;
-        }
-
-        .section-description {
-            max-width: 400px;
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        .endpoint-list {
-            border-top: 1px solid var(--line);
-        }
-
-        .endpoint {
-            display: grid;
-            grid-template-columns: 80px 1fr 180px;
-            align-items: center;
-            min-height: 76px;
-            border-bottom: 1px solid var(--line);
-            transition: background 0.2s ease;
-        }
-
-        .endpoint:hover {
-            background: var(--surface);
-        }
-
-        .method {
-            font-family: monospace;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--green);
-        }
-
-        .endpoint-path {
-            font-family: monospace;
-            font-size: 13px;
-        }
-
-        .endpoint-description {
-            color: var(--muted);
-            font-size: 12px;
-            text-align: right;
-        }
-
-        /* Code */
-
-        .code-section {
-            padding-bottom: 100px;
-        }
-
-        .code-card {
-            background: #171717;
-            color: #e8e8e8;
-            padding: 32px;
-            overflow-x: auto;
-            position: relative;
-        }
-
-        .code-label {
-            position: absolute;
-            top: 18px;
-            right: 22px;
-            color: #777;
-            font-family: monospace;
-            font-size: 10px;
-        }
-
-        pre {
-            font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-            font-size: 13px;
-            line-height: 1.8;
-        }
-
-        .code-green {
-            color: #9ac7a9;
-        }
-
-        .code-red {
-            color: #df8e8e;
-        }
-
-        /* Footer */
-
-        footer {
-            border-top: 1px solid var(--line);
-            min-height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            color: var(--muted);
-            font-size: 11px;
-        }
-
-        .status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .status-dot {
-            width: 7px;
-            height: 7px;
-            background: var(--green);
-            border-radius: 50%;
-        }
-
-        /* Responsive */
-
-        @media (max-width: 800px) {
-            .page {
-                padding: 0 20px;
-            }
-
-            nav {
-                gap: 14px;
-            }
-
-            nav a:nth-child(2) {
-                display: none;
-            }
-
-            .hero {
-                grid-template-columns: 1fr;
-                gap: 50px;
-                padding: 80px 0;
-            }
-
-            .hero-aside {
-                justify-content: flex-start;
-            }
-
-            .circle {
-                width: 210px;
-            }
-
-            .stats {
-                grid-template-columns: 1fr;
-            }
-
-            .stat {
-                border-right: none;
-                border-bottom: 1px solid var(--line);
-                padding-left: 0;
-            }
-
-            .stat:last-child {
-                border-bottom: none;
-            }
-
-            .section-header {
-                display: block;
-            }
-
-            .section-description {
-                margin-top: 20px;
-            }
-
-            .endpoint {
-                grid-template-columns: 65px 1fr;
-                padding: 18px 0;
-            }
-
-            .endpoint-description {
-                grid-column: 2;
-                text-align: left;
-                margin-top: 4px;
-            }
-
-            footer {
-                flex-direction: column;
-                justify-content: center;
-                align-items: flex-start;
-                gap: 10px;
-                padding: 25px 0;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="page">
-
-    <!-- Header -->
-    <header>
-        <a href="/" class="brand">
-            <div class="brand-mark"></div>
-
-            <div>
-                <div class="brand-name">RizFM</div>
-                <div class="brand-label">API</div>
+            <div class="circle-label">
+                Listen · Discover · Connect
             </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- Stats -->
+<section class="stats">
+
+    <div class="stat">
+        <div class="stat-value">
+            {{ station_count }}
+        </div>
+
+        <div class="stat-label">
+            Live stations
+        </div>
+    </div>
+
+    <div class="stat">
+        <div class="stat-value">
+            v{{ app_version }}
+        </div>
+
+        <div class="stat-label">
+            Mobile app · iOS &amp; Android
+        </div>
+    </div>
+
+    <div class="stat">
+        <div class="stat-value">
+            {{ api_version }}
+        </div>
+
+        <div class="stat-label">
+            REST API
+        </div>
+    </div>
+
+</section>
+
+
+<!-- Features -->
+<section class="section" id="features">
+
+    <div class="section-header">
+
+        <div>
+            <div class="section-number">01 / The app</div>
+            <h2>Made for listening.</h2>
+        </div>
+
+        <p class="section-description">
+            Everything {{ app_name }} does today, described as it really works.
+        </p>
+
+    </div>
+
+
+    <div class="feature-grid">
+
+        <article class="feature">
+            <div class="feature-index">01</div>
+            <h3>Discover stations</h3>
+            <p class="feature-lead">Find something to listen to in a couple of taps.</p>
+            <ul>
+                <li>
+                    <strong>Live Ugandan stations</strong>
+                    {{ station_count }} stations, with names, frequencies (like 91.3 FM), cities, genres, languages
+                    and station logos. The list comes from our own service, so new stations appear without an app update.
+                </li>
+                <li>
+                    <strong>Featured stations</strong>
+                    A curated row on the Home screen.
+                </li>
+                <li>
+                    <strong>Search</strong>
+                    Find stations by name or city as you type, and filter by genre from a native menu.
+                    Results load in pages as you scroll.
+                </li>
+                <li>
+                    <strong>Station details</strong>
+                    A bottom sheet with the logo, a short description, genres, frequency, location, language,
+                    stream format and quality, a link to the station’s website, and a Play button.
+                    It tells you if a station’s stream looks unreachable.
+                </li>
+            </ul>
+        </article>
+
+
+        <article class="feature">
+            <div class="feature-index">02</div>
+            <h3>Home</h3>
+            <p class="feature-lead">Pick up exactly where you left off.</p>
+            <ul>
+                <li>
+                    <strong>Greeting</strong>
+                    A time-of-day greeting in English with a small Japanese touch (おはよう, こんにちは, こんばんは).
+                </li>
+                <li>
+                    <strong>Continue listening</strong>
+                    A card for your last station with a one-tap Resume or Pause button. Its background is a soft,
+                    slowly moving blur in the station logo’s colours, with a fine film grain.
+                </li>
+                <li>
+                    <strong>Listening history</strong>
+                    Your recently played stations, which you can clear at any time.
+                </li>
+                <li>
+                    <strong>Search shortcut</strong>
+                    A button that jumps straight to Search.
+                </li>
+            </ul>
+        </article>
+
+
+        <article class="feature">
+            <div class="feature-index">03</div>
+            <h3>The player</h3>
+            <p class="feature-lead">Controls that feel like keys on a real radio.</p>
+            <ul>
+                <li>
+                    <strong>Mini player</strong>
+                    Stays at the bottom while you browse. On iOS 26 it sits in the tab bar like Apple Music.
+                </li>
+                <li>
+                    <strong>Full-screen player</strong>
+                    Large artwork, the station name, frequency and genres, and a live status (loading, buffering,
+                    reconnecting, on air). The animated background takes its colours from the station logo, and the
+                    text switches between light and dark so it’s always readable. Swipe down to minimise.
+                </li>
+                <li>
+                    <strong>Transport keys</strong>
+                    One row of three keys for previous, play/pause and next. Previous and next show the name of the
+                    station they’ll switch to; the middle key shows status and frequency.
+                </li>
+                <li>
+                    <strong>Volume strip</strong>
+                    One control with down and up keys and a level meter of ten rising bars, with a live percentage
+                    label. Drag, tap or hold to change it.
+                </li>
+                <li>
+                    <strong>Sleep timer</strong>
+                    Stop the radio after 15, 30, 45 or 60 minutes, 1.5 or 2 hours. It fades out gently, shows a live
+                    countdown, and can be set from the player or Settings.
+                </li>
+                <li>
+                    <strong>Info strip</strong>
+                    Shows the station’s city and stream format beside the sleep timer button.
+                </li>
+            </ul>
+        </article>
+
+
+        <article class="feature">
+            <div class="feature-index">04</div>
+            <h3>Smooth, reliable playback</h3>
+            <p class="feature-lead">It keeps going, so you don’t have to think about it.</p>
+            <ul>
+                <li>
+                    <strong>Seamless station switching (iPhone)</strong>
+                    The new station loads quietly while the old one keeps playing, then they cross-fade. No silent gap.
+                </li>
+                <li>
+                    <strong>Soft starts</strong>
+                    Every start fades in, with no pop or sudden blast.
+                </li>
+                <li>
+                    <strong>Keeps playing</strong>
+                    If a stream drops, stalls or the connection is lost, the app keeps trying to reconnect
+                    automatically until you pause. Pauses from you, the lock screen or a phone call are respected.
+                </li>
+                <li>
+                    <strong>Background playback</strong>
+                    Audio continues when you leave the app or lock your phone.
+                </li>
+                <li>
+                    <strong>Lock screen and notification controls</strong>
+                    Station name, details and logo on the lock screen, Control Center and the Android notification,
+                    with play and pause.
+                </li>
+                <li>
+                    <strong>Plays in silent mode (iOS)</strong>
+                    Audio keeps going when the ringer switch is muted, if you leave that setting on.
+                </li>
+                <li>
+                    <strong>Resume on launch</strong>
+                    When the app opens, a short 3-second countdown starts your last station. Cancel it, tap Play now,
+                    or turn it off in Settings.
+                </li>
+                <li>
+                    <strong>Switch confirmation</strong>
+                    If something is playing, pressing Play on another station asks you first.
+                </li>
+            </ul>
+        </article>
+
+
+        <article class="feature">
+            <div class="feature-index">05</div>
+            <h3>Siri and Shortcuts</h3>
+            <p class="feature-lead">iPhone</p>
+            <ul>
+                <li>
+                    <strong>Morning radio</strong>
+                    A link that opens the app and plays your last station. Pair it with a Shortcuts automation to
+                    start your radio every morning at a time you choose, or say “Hey Siri, play my radio” with a
+                    shortcut.
+                </li>
+            </ul>
+
+            <div class="feature-index" style="margin-top: 38px;">06</div>
+            <h3>Settings</h3>
+            <p class="feature-lead">Few, clear, and yours to change.</p>
+            <ul>
+                <li>
+                    <strong>Appearance</strong>
+                    System, Light or Dark.
+                </li>
+                <li>
+                    <strong>Playback</strong>
+                    Resume on launch, play in background, play in silent mode (iOS).
+                </li>
+                <li>
+                    <strong>Sleep timer</strong>
+                    Presets and a fade-out option.
+                </li>
+                <li>
+                    <strong>Feedback</strong>
+                    Haptic feedback on or off.
+                </li>
+                <li>
+                    <strong>Storage</strong>
+                    See exactly how much space the saved station logos use, and clear them with one tap.
+                </li>
+                <li>
+                    <strong>Data</strong>
+                    Clear your listening history.
+                </li>
+            </ul>
+        </article>
+
+
+        <article class="feature">
+            <div class="feature-index">07</div>
+            <h3>Design and feel</h3>
+            <p class="feature-lead">Flat, minimal and calm.</p>
+            <ul>
+                <li>
+                    <strong>Look</strong>
+                    Flat and clean, with thin borders and no heavy shadows. Light and dark appearances, with a lime
+                    accent.
+                </li>
+                <li>
+                    <strong>Type</strong>
+                    SF Pro Display for titles and SF Pro Rounded for everything else.
+                </li>
+                <li>
+                    <strong>Tactile controls</strong>
+                    The transport keys, volume strip and info strip are built as keys that press in and give a small
+                    vibration.
+                </li>
+                <li>
+                    <strong>Haptics throughout</strong>
+                    Taps, switching tabs, volume steps, errors and confirmations.
+                </li>
+                <li>
+                    <strong>Native feel on iPhone</strong>
+                    The real iOS tab bar (Liquid Glass on iOS 26), a native large-title header on Search, and
+                    native menus.
+                </li>
+            </ul>
+
+            <div class="feature-index" style="margin-top: 38px;">08</div>
+            <h3>Speed and efficiency</h3>
+            <p class="feature-lead">Quick on first launch, quicker after.</p>
+            <ul>
+                <li>
+                    <strong>Saved logos</strong>
+                    Station logos are saved on your phone the first time, so they don’t download again, even after
+                    you close and reopen the app.
+                </li>
+                <li>
+                    <strong>Fast lists</strong>
+                    Home, Search and Settings load only what’s on screen, so they stay smooth.
+                </li>
+            </ul>
+        </article>
+
+    </div>
+
+</section>
+
+
+<!-- Good to know -->
+<section class="section" id="good-to-know">
+
+    <div class="section-header">
+
+        <div>
+            <div class="section-number">02 / Good to know</div>
+            <h2>Plain and honest.</h2>
+        </div>
+
+        <p class="section-description">
+            What to expect from version {{ app_version }}.
+        </p>
+
+    </div>
+
+    <ul class="notes">
+        <li>
+            <strong>Live streaming only</strong>
+            <span>There are no downloads or offline listening.</span>
+        </li>
+        <li>
+            <strong>Private by design</strong>
+            <span>
+                There are no accounts, sign-in or cloud sync. Your history and settings stay on your phone.
+                Read the <a href="/privacy" style="color: var(--accent);">privacy policy</a>.
+            </span>
+        </li>
+        <li>
+            <strong>Stations, not tracks</strong>
+            <span>The app shows the station you’re listening to, not the current song or artist.</span>
+        </li>
+        <li>
+            <strong>Uganda for now</strong>
+            <span>Only Ugandan stations are included at the moment.</span>
+        </li>
+        <li>
+            <strong>Morning shortcut</strong>
+            <span>It starts your radio when your phone is unlocked. It isn’t a true alarm clock.</span>
+        </li>
+        <li>
+            <strong>Android station changes</strong>
+            <span>Android fades out and in between stations, but can’t overlap them the way iPhone does.</span>
+        </li>
+    </ul>
+
+</section>
+
+
+<!-- Versions -->
+<section class="section" id="versions">
+
+    <div class="section-header">
+
+        <div>
+            <div class="section-number">03 / Versions</div>
+            <h2>What’s running.</h2>
+        </div>
+
+        <p class="section-description">
+            The mobile app and the API are versioned separately.
+        </p>
+
+    </div>
+
+    <div class="versions">
+
+        <div class="version-card">
+            <div class="version-kind">Mobile app</div>
+            <div class="version-number">{{ app_version }}</div>
+            <div class="version-title">{{ app_name }} for iPhone and Android</div>
+
+            <dl class="spec">
+                <div class="spec-row">
+                    <dt>Platforms</dt>
+                    <dd>iOS and Android</dd>
+                </div>
+                <div class="spec-row">
+                    <dt>Stations</dt>
+                    <dd>{{ station_count }} live Ugandan stations, updated without an app update</dd>
+                </div>
+                <div class="spec-row">
+                    <dt>iPhone only</dt>
+                    <dd>Seamless cross-fade between stations · Siri and Shortcuts · play in silent mode</dd>
+                </div>
+                <div class="spec-row">
+                    <dt>Availability</dt>
+                    <dd>Store links will be added here at launch</dd>
+                </div>
+            </dl>
+        </div>
+
+
+        <div class="version-card">
+            <div class="version-kind">REST API</div>
+            <div class="version-number">{{ api_version }}</div>
+            <div class="version-title">Station directory API</div>
+
+            <dl class="spec">
+                <div class="spec-row">
+                    <dt>Base URL</dt>
+                    <dd><code>{{ base_url }}/api/v1</code></dd>
+                </div>
+                <div class="spec-row">
+                    <dt>Format</dt>
+                    <dd>JSON over HTTPS, with CORS enabled</dd>
+                </div>
+                <div class="spec-row">
+                    <dt>Stability</dt>
+                    <dd>Breaking changes ship as a new version, never inside <code>{{ api_version }}</code></dd>
+                </div>
+                <div class="spec-row">
+                    <dt>Status</dt>
+                    <dd><a href="/health" style="color: var(--accent);">Check service health</a></dd>
+                </div>
+            </dl>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- API -->
+<section class="section" id="api">
+
+    <div class="section-header">
+
+        <div>
+            <div class="section-number">04 / API</div>
+            <h2>Simple by design.</h2>
+        </div>
+
+        <p class="section-description">
+            The same station directory the app uses: discover Uganda’s online radio stations, stream URLs
+            and station metadata through a small, predictable API.
+        </p>
+
+    </div>
+
+
+    <div class="endpoint-list">
+
+        <a class="endpoint" href="/api/v1/stations">
+
+            <span class="method">GET</span>
+
+            <span class="endpoint-path">
+                /api/v1/stations
+            </span>
+
+            <span class="endpoint-description">
+                List, search and filter stations
+            </span>
+
         </a>
 
-        <nav>
-            <a href="/api/v1/stations">Stations</a>
-            <a href="/api/v1/stations/featured">Featured</a>
-            <a href="/health">Health</a>
-        </nav>
-    </header>
 
+        <a class="endpoint" href="/api/v1/stations/featured">
 
-    <!-- Hero -->
-    <main>
+            <span class="method">GET</span>
 
-        <section class="hero">
+            <span class="endpoint-path">
+                /api/v1/stations/featured
+            </span>
 
-            <div>
-                <div class="eyebrow">
-                    <span class="eyebrow-line"></span>
-                    Uganda Radio Infrastructure
-                </div>
+            <span class="endpoint-description">
+                Featured stations
+            </span>
 
-                <h1>
-                    Radio,<br>
-                    <span>connected.</span>
-                </h1>
+        </a>
 
-                <p class="hero-description">
-                    RizFM provides a simple REST API for discovering Uganda's
-                    online radio stations, stream URLs and station metadata.
-                    Built for mobile applications and modern radio experiences.
-                </p>
 
-                <div class="actions">
-                    <a
-                        class="button primary"
-                        href="/api/v1/stations"
-                    >
-                        View stations
-                    </a>
+        <a class="endpoint" href="/api/v1/stations/capital-fm">
 
-                    <a
-                        class="button secondary"
-                        href="/health"
-                    >
-                        API status
-                    </a>
-                </div>
-            </div>
+            <span class="method">GET</span>
 
+            <span class="endpoint-path">
+                /api/v1/stations/:id
+            </span>
 
-            <div class="hero-aside">
+            <span class="endpoint-description">
+                Station details
+            </span>
 
-                <div class="circle">
-                    <span class="japanese-character">音</span>
+        </a>
 
-                    <div class="circle-label">
-                        Listen · Discover · Connect
-                    </div>
-                </div>
 
-            </div>
+        <a class="endpoint" href="/health">
 
-        </section>
+            <span class="method">GET</span>
 
+            <span class="endpoint-path">
+                /health
+            </span>
 
-        <!-- Stats -->
-        <section class="stats">
+            <span class="endpoint-description">
+                Service health
+            </span>
 
-            <div class="stat">
-                <div class="stat-value">
-                    {{ station_count }}
-                </div>
+        </a>
 
-                <div class="stat-label">
-                    Active stations
-                </div>
-            </div>
+    </div>
 
-            <div class="stat">
-                <div class="stat-value">
-                    REST
-                </div>
 
-                <div class="stat-label">
-                    API architecture
-                </div>
-            </div>
+    <div class="code-card">
 
-            <div class="stat">
-                <div class="stat-value">
-                    v1
-                </div>
+        <span class="code-label">GET /api/v1/stations</span>
 
-                <div class="stat-label">
-                    API version
-                </div>
-            </div>
-
-        </section>
-
-
-        <!-- Endpoints -->
-        <section class="api-section">
-
-            <div class="section-header">
-
-                <div>
-                    <div class="section-number">01 / ENDPOINTS</div>
-                    <h2>Simple by design.</h2>
-                </div>
-
-                <p class="section-description">
-                    Everything you need to discover and work with Uganda's
-                    online radio stations through a small, predictable API.
-                </p>
-
-            </div>
-
-
-            <div class="endpoint-list">
-
-                <a class="endpoint" href="/api/v1/stations">
-
-                    <span class="method">GET</span>
-
-                    <span class="endpoint-path">
-                        /api/v1/stations
-                    </span>
-
-                    <span class="endpoint-description">
-                        List stations
-                    </span>
-
-                </a>
-
-
-                <a
-                    class="endpoint"
-                    href="/api/v1/stations/featured"
-                >
-
-                    <span class="method">GET</span>
-
-                    <span class="endpoint-path">
-                        /api/v1/stations/featured
-                    </span>
-
-                    <span class="endpoint-description">
-                        Featured stations
-                    </span>
-
-                </a>
-
-
-                <a
-                    class="endpoint"
-                    href="/api/v1/stations/1"
-                >
-
-                    <span class="method">GET</span>
-
-                    <span class="endpoint-path">
-                        /api/v1/stations/:id
-                    </span>
-
-                    <span class="endpoint-description">
-                        Station details
-                    </span>
-
-                </a>
-
-
-                <a
-                    class="endpoint"
-                    href="/health"
-                >
-
-                    <span class="method">GET</span>
-
-                    <span class="endpoint-path">
-                        /health
-                    </span>
-
-                    <span class="endpoint-description">
-                        Service health
-                    </span>
-
-                </a>
-
-            </div>
-
-        </section>
-
-
-        <!-- Quick Start -->
-        <section class="code-section">
-
-            <div class="section-header">
-
-                <div>
-                    <div class="section-number">02 / QUICK START</div>
-                    <h2>Start listening.</h2>
-                </div>
-
-                <p class="section-description">
-                    Fetch the station catalogue with one request.
-                </p>
-
-            </div>
-
-
-            <div class="code-card">
-
-                <span class="code-label">GET /stations</span>
-
-<pre><span class="code-green">$</span> curl https://rizfm.pkasemer.com/api/v1/stations
+<pre><span class="code-green">$</span> curl "{{ base_url }}/api/v1/stations?limit=1"
 
 {
-  <span class="code-red">"stations"</span>: [
+  <span class="code-red">"data"</span>: [
     {
       <span class="code-red">"id"</span>: "capital-fm",
       <span class="code-red">"name"</span>: "Capital FM Uganda",
       <span class="code-red">"frequency"</span>: "91.3 FM",
       <span class="code-red">"city"</span>: "Kampala",
-      <span class="code-red">"streamUrl"</span>: "http://capitalfm.cloudrad.io/stream"
+      <span class="code-red">"streamUrl"</span>: "http://capitalfm.cloudrad.io/stream",
+      <span class="code-red">"logoUrl"</span>: "{{ base_url }}/static/logos/capital-fm.png"
     }
-  ]
+  ],
+  <span class="code-red">"pagination"</span>: { "page": 1, "limit": 1, "total": {{ station_count }} }
 }</pre>
 
-            </div>
+    </div>
 
-        </section>
+</section>
 
-    </main>
-
-
-    <!-- Footer -->
-    <footer>
-
-        <div>
-            © {{ current_year if current_year else "2026" }} RizFM
-        </div>
-
-        <div>
-            <a href="/privacy">Privacy policy</a>
-            &nbsp;·&nbsp;
-            <a href="/delete-data">Delete your data</a>
-        </div>
-
-        <div class="status">
-            <span class="status-dot"></span>
-            API operational
-        </div>
-
-    </footer>
-
-</div>
-
-</body>
-</html>
+{% endblock %}

@@ -1,27 +1,20 @@
-from datetime import datetime
-
 from flask import Blueprint, current_app, render_template
 
 pages = Blueprint("pages", __name__)
 
 # Bump this whenever the wording of the privacy policy or deletion page changes.
-POLICY_UPDATED = "16 November 2026"
-
-
-def _legal_context():
-    cfg = current_app.config
-    return {
-        "app_name": cfg["APP_NAME"],
-        "operator": cfg["PRIVACY_OPERATOR"],
-        "contact_email": cfg["PRIVACY_CONTACT_EMAIL"],
-        "base_url": cfg["PUBLIC_BASE_URL"],
-        "updated": POLICY_UPDATED,
-        "current_year": datetime.now().year,
-    }
+POLICY_UPDATED = "17 November 2026"
 
 
 def _render(template):
-    response = current_app.make_response(render_template(template, **_legal_context()))
+    # app_name, operator, base_url and current_year come from the app-wide context processor.
+    response = current_app.make_response(
+        render_template(
+            template,
+            contact_email=current_app.config["PRIVACY_CONTACT_EMAIL"],
+            updated=POLICY_UPDATED,
+        )
+    )
     response.headers["Cache-Control"] = "public, max-age=3600"
     return response
 

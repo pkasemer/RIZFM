@@ -122,3 +122,31 @@ def test_home_page_links_to_legal_pages():
     html = create_app().test_client().get("/").get_data(as_text=True)
     assert 'href="/privacy"' in html
     assert 'href="/delete-data"' in html
+
+
+def test_landing_page_describes_app_and_api_with_versions():
+    app = create_app()
+    app.config["APP_VERSION"] = "2.3.4"
+    html = app.test_client().get("/").get_data(as_text=True)
+    assert "SOFIZ FM" in html
+    assert "2.3.4" in html  # mobile app version
+    assert "v1" in html  # API version
+    for text in ["Discover stations", "The player", "Sleep timer", "Siri and Shortcuts", "/api/v1/stations", "Good to know"]:
+        assert text in html, text
+    # Things the app does not do must not be advertised as features.
+    assert "Favourites" not in html and "offline listening." in html
+
+
+def test_all_pages_share_the_site_layout():
+    client = create_app().test_client()
+    for path in ("/", "/privacy", "/delete-data"):
+        html = client.get(path).get_data(as_text=True)
+        assert 'class="brand-mark"' in html, path
+        assert 'href="/privacy"' in html and 'href="/delete-data"' in html, path
+        assert "<style>" in html and "--accent" in html, path
+
+
+def test_legal_pages_cover_the_image_cache():
+    client = create_app().test_client()
+    assert "Clear image cache" in client.get("/privacy").get_data(as_text=True)
+    assert "Clear image cache" in client.get("/delete-data").get_data(as_text=True)

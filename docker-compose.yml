@@ -10,6 +10,7 @@ services:
       APP_NAME: ${APP_NAME:-SOFIZ FM}
       PRIVACY_OPERATOR_NAME: ${PRIVACY_OPERATOR_NAME:-SOFIZ FM}
       PRIVACY_CONTACT_EMAIL: ${PRIVACY_CONTACT_EMAIL:-}
+      APP_VERSION: ${APP_VERSION:-1.0.0}
     volumes:
       - radio-data:/app/data
     restart: unless-stopped
