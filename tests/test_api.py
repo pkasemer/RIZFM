@@ -124,17 +124,30 @@ def test_home_page_links_to_legal_pages():
     assert 'href="/delete-data"' in html
 
 
-def test_landing_page_describes_app_and_api_with_versions():
+def test_landing_page_is_a_personal_take_on_designing_the_app():
     app = create_app()
     app.config["APP_VERSION"] = "2.3.4"
     html = app.test_client().get("/").get_data(as_text=True)
-    assert "SOFIZ FM" in html
-    assert "2.3.4" in html  # mobile app version
-    assert "v1" in html  # API version
-    for text in ["Discover stations", "The player", "Sleep timer", "Siri and Shortcuts", "/api/v1/stations", "Good to know"]:
-        assert text in html, text
+
+    # The app is called RIZFM, not the old name.
+    assert "RIZFM" in html and "SOFIZ" not in html
+    assert "A personal take on online radio" in html
+    for idea in ["Radio should just start", "Controls should feel like a radio", "The station is the star",
+                 "Nobody should have to touch the volume", "Quiet, and minding its own business",
+                 "Calm, minimal, a little Japanese"]:
+        assert idea in html, idea
+    assert "What I left out" in html and "Small things I cared about" in html
+
+    # Versions and the API are still on the page, under "Under the hood".
+    assert "2.3.4" in html and "/api/v1/stations" in html and 'id="build"' in html
     # Things the app does not do must not be advertised as features.
-    assert "Favourites" not in html and "offline listening." in html
+    assert "No downloads" in html and "Not the current song" in html
+
+
+def test_the_app_name_can_still_be_configured(monkeypatch):
+    monkeypatch.setenv("APP_NAME", "Another FM")
+    html = create_app().test_client().get("/").get_data(as_text=True)
+    assert "Another FM" in html and "RIZFM" not in html.split("<main>")[1].split("</main>")[0]
 
 
 def test_all_pages_share_the_site_layout():

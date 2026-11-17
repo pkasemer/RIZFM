@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}{{ app_name }} — Live Ugandan radio{% endblock %}
-{% block description %}{{ app_name }} is an app for listening to live Ugandan radio stations, with a clean, minimal design inspired by Japanese and anime aesthetics. Also a simple REST API for Uganda's online radio stations.{% endblock %}
-{% block og_title %}{{ app_name }} — Live Ugandan radio{% endblock %}
+{% block title %}{{ app_name }} — A personal take on online radio{% endblock %}
+{% block description %}{{ app_name }} is my take on what an online radio app should feel like: press play, hear a station, forget about the app. Built around Ugandan radio, with a calm, minimal design.{% endblock %}
+{% block og_title %}{{ app_name }} — A personal take on online radio{% endblock %}
 
 {% block content %}
 
@@ -12,27 +12,32 @@
     <div>
         <div class="eyebrow">
             <span class="eyebrow-line"></span>
-            Live Ugandan radio
+            A personal take on online radio
         </div>
 
         <h1>
-            Uganda,<br>
-            <span>on air.</span>
+            Radio,<br>
+            <span>made calm.</span>
         </h1>
 
         <p class="hero-description">
-            {{ app_name }} is an app for listening to live Ugandan radio stations,
-            with a clean, minimal design inspired by Japanese and anime aesthetics.
-            Pick a station, press play, and let it keep going.
+            {{ app_name }} is my take on what an online radio app should feel like.
+            Not a feed, not a catalogue: a tuner. Press play, hear a station,
+            forget about the app.
+        </p>
+
+        <p class="hero-description">
+            It is built around Ugandan stations, with a few favourites from further away.
+            This page is the thinking behind it.
         </p>
 
         <div class="actions">
-            <a class="button primary" href="#features">
-                Explore the app
+            <a class="button primary" href="#take">
+                Read my take
             </a>
 
-            <a class="button secondary" href="#api">
-                Developer API
+            <a class="button secondary" href="#build">
+                How it’s built
             </a>
         </div>
     </div>
@@ -72,35 +77,36 @@
         </div>
 
         <div class="stat-label">
-            Mobile app · iOS &amp; Android
+            The app · iOS &amp; Android
         </div>
     </div>
 
     <div class="stat">
         <div class="stat-value">
-            {{ api_version }}
+            0
         </div>
 
         <div class="stat-label">
-            REST API
+            Accounts needed
         </div>
     </div>
 
 </section>
 
 
-<!-- Features -->
-<section class="section" id="features">
+<!-- My take -->
+<section class="section" id="take">
 
     <div class="section-header">
 
         <div>
-            <div class="section-number">01 / The app</div>
-            <h2>Made for listening.</h2>
+            <div class="section-number">01 / My take</div>
+            <h2>Six ideas I started from.</h2>
         </div>
 
         <p class="section-description">
-            Everything {{ app_name }} does today, described as it really works.
+            Radio was good at one thing: it was there the moment you reached for it.
+            Everything below is me trying to keep that.
         </p>
 
     </div>
@@ -110,28 +116,24 @@
 
         <article class="feature">
             <div class="feature-index">01</div>
-            <h3>Discover stations</h3>
-            <p class="feature-lead">Find something to listen to in a couple of taps.</p>
+            <h3>Radio should just start</h3>
+            <p class="feature-lead">No sign-up, and no home feed to scroll first.</p>
+            <p class="feature-body">
+                A radio has no loading screen. You turn the knob and there is sound. So the app opens on
+                your stations, one tap starts one, and the audio fades in softly instead of arriving with a pop.
+            </p>
             <ul>
                 <li>
-                    <strong>Live Ugandan stations</strong>
-                    {{ station_count }} stations, with names, frequencies (like 91.3 FM), cities, countries, genres,
-                    languages and station logos. The list comes from our own service, so new stations appear without an app update.
+                    <strong>Resume on launch</strong>
+                    A three-second countdown starts your last station, and you can cancel it.
                 </li>
                 <li>
-                    <strong>Featured stations</strong>
-                    A curated row on the Home screen.
+                    <strong>It keeps going</strong>
+                    If a stream drops, the app keeps trying to reconnect on its own until you press pause.
                 </li>
                 <li>
-                    <strong>Search</strong>
-                    Find stations by name or city as you type, and filter by genre from a native menu.
-                    Results load in pages as you scroll.
-                </li>
-                <li>
-                    <strong>Station details</strong>
-                    A bottom sheet with the logo, a short description, genres, frequency, location, language,
-                    stream format and quality, a link to the station’s website, and a Play button.
-                    It tells you if a station’s stream looks unreachable.
+                    <strong>No gap between stations</strong>
+                    On iPhone the next station loads quietly while the old one plays, then they cross-fade.
                 </li>
             </ul>
         </article>
@@ -139,25 +141,20 @@
 
         <article class="feature">
             <div class="feature-index">02</div>
-            <h3>Home</h3>
-            <p class="feature-lead">Pick up exactly where you left off.</p>
+            <h3>Controls should feel like a radio</h3>
+            <p class="feature-lead">Keys you press, not icons you hope you hit.</p>
+            <p class="feature-body">
+                I wanted the player to feel physical. The transport keys press in and give a small vibration.
+                Volume is a strip of ten rising bars you can tap, drag or hold, like the meter on a stereo.
+            </p>
             <ul>
                 <li>
-                    <strong>Greeting</strong>
-                    A time-of-day greeting in English with a small Japanese touch (おはよう, こんにちは, こんばんは).
+                    <strong>Previous and next say where they go</strong>
+                    Each key shows the name of the station it will switch to.
                 </li>
                 <li>
-                    <strong>Continue listening</strong>
-                    A card for your last station with a one-tap Resume or Pause button. Its background is a soft,
-                    slowly moving blur in the station logo’s colours, with a fine film grain.
-                </li>
-                <li>
-                    <strong>Listening history</strong>
-                    Your recently played stations, which you can clear at any time.
-                </li>
-                <li>
-                    <strong>Search shortcut</strong>
-                    A button that jumps straight to Search.
+                    <strong>Haptics throughout</strong>
+                    Taps, volume steps, errors and confirmations, all with a quiet buzz you can switch off.
                 </li>
             </ul>
         </article>
@@ -165,37 +162,21 @@
 
         <article class="feature">
             <div class="feature-index">03</div>
-            <h3>The player</h3>
-            <p class="feature-lead">Controls that feel like keys on a real radio.</p>
+            <h3>The station is the star</h3>
+            <p class="feature-lead">The app should step aside for the thing you came to hear.</p>
+            <p class="feature-body">
+                Every station has its own logo, frequency and city, and that is what the player is made of.
+                The animated backdrop takes its colours from the logo, and the text flips between light and
+                dark so it is always readable.
+            </p>
             <ul>
                 <li>
-                    <strong>Mini player</strong>
-                    Stays at the bottom while you browse. On iOS 26 it sits in the tab bar like Apple Music.
+                    <strong>Continue listening</strong>
+                    A card for your last station with one-tap resume, over a slow blur in the logo’s colours.
                 </li>
                 <li>
-                    <strong>Full-screen player</strong>
-                    Large artwork, the station name, frequency and genres, and a live status (loading, buffering,
-                    reconnecting, on air). The animated background takes its colours from the station logo, and the
-                    text switches between light and dark so it’s always readable. Swipe down to minimise.
-                </li>
-                <li>
-                    <strong>Transport keys</strong>
-                    One row of three keys for previous, play/pause and next. Previous and next show the name of the
-                    station they’ll switch to; the middle key shows status and frequency.
-                </li>
-                <li>
-                    <strong>Volume strip</strong>
-                    One control with down and up keys and a level meter of ten rising bars, with a live percentage
-                    label. Drag, tap or hold to change it.
-                </li>
-                <li>
-                    <strong>Sleep timer</strong>
-                    Stop the radio after 15, 30, 45 or 60 minutes, 1.5 or 2 hours. It fades out gently, shows a live
-                    countdown, and can be set from the player or Settings.
-                </li>
-                <li>
-                    <strong>Info strip</strong>
-                    Shows the station’s city and stream format beside the sleep timer button.
+                    <strong>Station details</strong>
+                    Genres, language, stream format, and a link to the station’s own website.
                 </li>
             </ul>
         </article>
@@ -203,135 +184,54 @@
 
         <article class="feature">
             <div class="feature-index">04</div>
-            <h3>Smooth, reliable playback</h3>
-            <p class="feature-lead">It keeps going, so you don’t have to think about it.</p>
-            <ul>
-                <li>
-                    <strong>Seamless station switching (iPhone)</strong>
-                    The new station loads quietly while the old one keeps playing, then they cross-fade. No silent gap.
-                </li>
-                <li>
-                    <strong>Soft starts</strong>
-                    Every start fades in, with no pop or sudden blast.
-                </li>
-                <li>
-                    <strong>Keeps playing</strong>
-                    If a stream drops, stalls or the connection is lost, the app keeps trying to reconnect
-                    automatically until you pause. Pauses from you, the lock screen or a phone call are respected.
-                </li>
-                <li>
-                    <strong>Background playback</strong>
-                    Audio continues when you leave the app or lock your phone.
-                </li>
-                <li>
-                    <strong>Lock screen and notification controls</strong>
-                    Station name, details and logo on the lock screen, Control Center and the Android notification,
-                    with play and pause.
-                </li>
-                <li>
-                    <strong>Plays in silent mode (iOS)</strong>
-                    Audio keeps going when the ringer switch is muted, if you leave that setting on.
-                </li>
-                <li>
-                    <strong>Resume on launch</strong>
-                    When the app opens, a short 3-second countdown starts your last station. Cancel it, tap Play now,
-                    or turn it off in Settings.
-                </li>
-                <li>
-                    <strong>Switch confirmation</strong>
-                    If something is playing, pressing Play on another station asks you first.
-                </li>
-            </ul>
+            <h3>Nobody should have to touch the volume</h3>
+            <p class="feature-lead">Switching stations shouldn’t mean grabbing the slider.</p>
+            <p class="feature-body">
+                Stations broadcast at wildly different levels. Go from one mastered loud to a quiet talk
+                station and your ears pay for it. So a small server measures how loud each station is, and the
+                app turns the loud ones down to match.
+            </p>
+            <p class="feature-body">
+                The server only reports a number. Your audio comes straight from the station, untouched.
+            </p>
         </article>
 
 
         <article class="feature">
             <div class="feature-index">05</div>
-            <h3>Siri and Shortcuts</h3>
-            <p class="feature-lead">iPhone</p>
+            <h3>Quiet, and minding its own business</h3>
+            <p class="feature-lead">A radio app has no reason to know who you are.</p>
+            <p class="feature-body">
+                There are no accounts, no ads and no tracking. Your history and settings live on your phone and
+                nowhere else. And there is a sleep timer that fades out gently instead of cutting you off.
+            </p>
             <ul>
                 <li>
-                    <strong>Morning radio</strong>
-                    A link that opens the app and plays your last station. Pair it with a Shortcuts automation to
-                    start your radio every morning at a time you choose, or say “Hey Siri, play my radio” with a
-                    shortcut.
-                </li>
-            </ul>
-
-            <div class="feature-index" style="margin-top: 38px;">06</div>
-            <h3>Settings</h3>
-            <p class="feature-lead">Few, clear, and yours to change.</p>
-            <ul>
-                <li>
-                    <strong>Appearance</strong>
-                    System, Light or Dark.
-                </li>
-                <li>
-                    <strong>Playback</strong>
-                    Resume on launch, play in background, play in silent mode (iOS).
-                </li>
-                <li>
-                    <strong>Sleep timer</strong>
-                    Presets and a fade-out option.
-                </li>
-                <li>
-                    <strong>Feedback</strong>
-                    Haptic feedback on or off.
-                </li>
-                <li>
-                    <strong>Storage</strong>
-                    See exactly how much space the saved station logos use, and clear them with one tap.
-                </li>
-                <li>
-                    <strong>Data</strong>
-                    Clear your listening history.
+                    <strong>Private by design</strong>
+                    What the app stores, and how to delete it, is on the
+                    <a href="/privacy" style="color: var(--accent);">privacy policy</a> page.
                 </li>
             </ul>
         </article>
 
 
         <article class="feature">
-            <div class="feature-index">07</div>
-            <h3>Design and feel</h3>
-            <p class="feature-lead">Flat, minimal and calm.</p>
+            <div class="feature-index">06</div>
+            <h3>Calm, minimal, a little Japanese</h3>
+            <p class="feature-lead">Flat, thin lines, and room to breathe.</p>
+            <p class="feature-body">
+                The look is flat and clean: thin borders, no heavy shadows, rounded type. I borrowed from
+                Japanese and anime design, which is why the greeting changes with the time of day
+                (おはよう, こんにちは, こんばんは) and the Continue listening card has a fine film grain.
+            </p>
             <ul>
                 <li>
-                    <strong>Look</strong>
-                    Flat and clean, with thin borders and no heavy shadows. Light and dark appearances, with a lime
-                    accent.
+                    <strong>Light and dark</strong>
+                    Follow the system, or pick one, with a lime accent.
                 </li>
                 <li>
-                    <strong>Type</strong>
-                    SF Pro Display for titles and SF Pro Rounded for everything else.
-                </li>
-                <li>
-                    <strong>Tactile controls</strong>
-                    The transport keys, volume strip and info strip are built as keys that press in and give a small
-                    vibration.
-                </li>
-                <li>
-                    <strong>Haptics throughout</strong>
-                    Taps, switching tabs, volume steps, errors and confirmations.
-                </li>
-                <li>
-                    <strong>Native feel on iPhone</strong>
-                    The real iOS tab bar (Liquid Glass on iOS 26), a native large-title header on Search, and
-                    native menus.
-                </li>
-            </ul>
-
-            <div class="feature-index" style="margin-top: 38px;">08</div>
-            <h3>Speed and efficiency</h3>
-            <p class="feature-lead">Quick on first launch, quicker after.</p>
-            <ul>
-                <li>
-                    <strong>Saved logos</strong>
-                    Station logos are saved on your phone the first time, so they don’t download again, even after
-                    you close and reopen the app.
-                </li>
-                <li>
-                    <strong>Fast lists</strong>
-                    Home, Search and Settings load only what’s on screen, so they stay smooth.
+                    <strong>Native where it counts</strong>
+                    The real iOS tab bar, native menus and large titles.
                 </li>
             </ul>
         </article>
@@ -341,75 +241,139 @@
 </section>
 
 
-<!-- Good to know -->
-<section class="section" id="good-to-know">
+<!-- Details -->
+<section class="section" id="details">
 
     <div class="section-header">
 
         <div>
-            <div class="section-number">02 / Good to know</div>
-            <h2>Plain and honest.</h2>
+            <div class="section-number">02 / Details</div>
+            <h2>Small things I cared about.</h2>
         </div>
 
         <p class="section-description">
-            What to expect from version {{ app_version }}.
+            The kind of thing you only notice when it is missing.
         </p>
 
     </div>
 
     <ul class="notes">
         <li>
-            <strong>Live streaming only</strong>
-            <span>There are no downloads or offline listening.</span>
+            <strong>Soft starts</strong>
+            <span>Every start fades in. No pop, no sudden blast.</span>
         </li>
         <li>
-            <strong>Private by design</strong>
+            <strong>It reconnects itself</strong>
             <span>
-                There are no accounts, sign-in or cloud sync. Your history and settings stay on your phone.
-                Read the <a href="/privacy" style="color: var(--accent);">privacy policy</a>.
+                A stalled or dropped stream is retried until you press pause. Pauses from you, the lock screen or a
+                phone call are respected.
             </span>
         </li>
         <li>
-            <strong>Stations, not tracks</strong>
-            <span>The app shows the station you’re listening to, not the current song or artist.</span>
+            <strong>Lock screen controls</strong>
+            <span>Station name, details and logo on the lock screen, Control Center and the Android notification.</span>
         </li>
         <li>
-            <strong>Uganda first</strong>
-            <span>The catalogue is built around Ugandan stations, with international favourites too: Heart UK, K-LOVE, US hip-hop from New York, Los Angeles and Detroit, and country from Tennessee.</span>
+            <strong>Background playback</strong>
+            <span>Audio keeps going when you leave the app or lock your phone.</span>
         </li>
         <li>
-            <strong>Morning shortcut</strong>
-            <span>It starts your radio when your phone is unlocked. It isn’t a true alarm clock.</span>
+            <strong>Silent mode</strong>
+            <span>On iPhone it keeps playing with the ringer switch muted, unless you turn that off.</span>
         </li>
         <li>
-            <strong>Android station changes</strong>
-            <span>Android fades out and in between stations, but can’t overlap them the way iPhone does.</span>
+            <strong>Asking first</strong>
+            <span>If something is playing, pressing Play on another station asks before it switches.</span>
+        </li>
+        <li>
+            <strong>Saved logos</strong>
+            <span>
+                Logos are kept on the phone after the first time, so they don’t download again. Settings shows the
+                space they use and clears it in one tap.
+            </span>
+        </li>
+        <li>
+            <strong>Morning radio</strong>
+            <span>
+                On iPhone, a Shortcuts automation can open the app and play your last station at a time you choose.
+            </span>
         </li>
     </ul>
 
 </section>
 
 
-<!-- Versions -->
-<section class="section" id="versions">
+<!-- Left out -->
+<section class="section" id="left-out">
 
     <div class="section-header">
 
         <div>
-            <div class="section-number">03 / Versions</div>
-            <h2>What’s running.</h2>
+            <div class="section-number">03 / Left out</div>
+            <h2>What I left out.</h2>
         </div>
 
         <p class="section-description">
-            The mobile app and the API are versioned separately.
+            Restraint is a design decision too.
         </p>
 
     </div>
 
+    <ul class="notes">
+        <li>
+            <strong>No accounts</strong>
+            <span>There is nothing to sign into and no cloud sync. History and settings stay on your phone.</span>
+        </li>
+        <li>
+            <strong>No ads, no tracking</strong>
+            <span>Nothing to sell, and nothing in the app that watches what you listen to.</span>
+        </li>
+        <li>
+            <strong>No downloads</strong>
+            <span>It is live radio, and only live radio.</span>
+        </li>
+        <li>
+            <strong>Not the current song</strong>
+            <span>The app shows the station you are listening to, not the track playing. That is a gap in this version.</span>
+        </li>
+        <li>
+            <strong>Mostly Uganda</strong>
+            <span>
+                The catalogue is built around Ugandan stations, with some favourites from elsewhere:
+                Heart UK, K-LOVE, US hip-hop and country from Tennessee.
+            </span>
+        </li>
+    </ul>
+
+</section>
+
+
+<!-- Under the hood -->
+<section class="section" id="build">
+
+    <div class="section-header">
+
+        <div>
+            <div class="section-number">04 / Under the hood</div>
+            <h2>Small on purpose.</h2>
+        </div>
+
+        <p class="section-description">
+            A phone app, a small API, and two quiet workers.
+        </p>
+
+    </div>
+
+    <p class="hero-description" style="margin: 0 0 40px; max-width: 760px;">
+        The app is built with Expo and React Native for iPhone and Android. It gets its stations from a small
+        Flask API, so new stations appear without an app update. Two background workers keep that list honest:
+        one checks that every stream really plays, and the other measures how loud each one is.
+    </p>
+
     <div class="versions">
 
         <div class="version-card">
-            <div class="version-kind">Mobile app</div>
+            <div class="version-kind">The app</div>
             <div class="version-number">{{ app_version }}</div>
             <div class="version-title">{{ app_name }} for iPhone and Android</div>
 
@@ -424,7 +388,7 @@
                 </div>
                 <div class="spec-row">
                     <dt>iPhone only</dt>
-                    <dd>Seamless cross-fade between stations · Siri and Shortcuts · play in silent mode</dd>
+                    <dd>Cross-fade between stations · Siri and Shortcuts · play in silent mode</dd>
                 </div>
                 <div class="spec-row">
                     <dt>Availability</dt>
@@ -435,9 +399,9 @@
 
 
         <div class="version-card">
-            <div class="version-kind">REST API</div>
+            <div class="version-kind">The API</div>
             <div class="version-number">{{ api_version }}</div>
-            <div class="version-title">Station directory API</div>
+            <div class="version-title">The station directory behind the app</div>
 
             <dl class="spec">
                 <div class="spec-row">
@@ -461,28 +425,8 @@
 
     </div>
 
-</section>
 
-
-<!-- API -->
-<section class="section" id="api">
-
-    <div class="section-header">
-
-        <div>
-            <div class="section-number">04 / API</div>
-            <h2>Simple by design.</h2>
-        </div>
-
-        <p class="section-description">
-            The same station directory the app uses: discover Uganda’s online radio stations, stream URLs
-            and station metadata through a small, predictable API.
-        </p>
-
-    </div>
-
-
-    <div class="endpoint-list">
+    <div class="endpoint-list" style="margin-top: 48px;">
 
         <a class="endpoint" href="/api/v1/stations">
 
@@ -527,45 +471,6 @@
             </span>
 
         </a>
-
-
-        <a class="endpoint" href="/health">
-
-            <span class="method">GET</span>
-
-            <span class="endpoint-path">
-                /health
-            </span>
-
-            <span class="endpoint-description">
-                Service health
-            </span>
-
-        </a>
-
-    </div>
-
-
-    <div class="code-card">
-
-        <span class="code-label">GET /api/v1/stations</span>
-
-<pre><span class="code-green">$</span> curl "{{ base_url }}/api/v1/stations?limit=1"
-
-{
-  <span class="code-red">"data"</span>: [
-    {
-      <span class="code-red">"id"</span>: "capital-fm",
-      <span class="code-red">"name"</span>: "Capital FM Uganda",
-      <span class="code-red">"frequency"</span>: "91.3 FM",
-      <span class="code-red">"city"</span>: "Kampala",
-      <span class="code-red">"country"</span>: "Uganda",
-      <span class="code-red">"streamUrl"</span>: "http://capitalfm.cloudrad.io/stream",
-      <span class="code-red">"logoUrl"</span>: "{{ base_url }}/static/logos/capital-fm.png"
-    }
-  ],
-  <span class="code-red">"pagination"</span>: { "page": 1, "limit": 1, "total": {{ station_count }} }
-}</pre>
 
     </div>
 

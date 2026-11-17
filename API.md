@@ -812,8 +812,8 @@ Configure the text with environment variables (see `.env.example`):
 | Variable | Default | Purpose |
 |---|---|---|
 | `PRIVACY_CONTACT_EMAIL` | empty | Contact address shown on both pages. **Set this before submitting.** |
-| `PRIVACY_OPERATOR_NAME` | `SOFIZ FM` | Publisher name shown in the policy |
-| `APP_NAME` | `SOFIZ FM` | App name shown in the policy |
+| `PRIVACY_OPERATOR_NAME` | `RIZFM` | Publisher name shown in the policy |
+| `APP_NAME` | `RIZFM` | App name shown in the policy |
 | `PUBLIC_BASE_URL` | `https://rizfm.pkasemer.com` | Public origin of this service |
 
 ---

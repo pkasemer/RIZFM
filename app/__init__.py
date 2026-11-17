@@ -24,7 +24,7 @@ def create_app():
         app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"connect_args": {"timeout": 30}}
 
     # Shown on the public privacy / data-deletion pages.
-    app.config["APP_NAME"] = os.getenv("APP_NAME", "SOFIZ FM")
+    app.config["APP_NAME"] = os.getenv("APP_NAME", "RIZFM")
     app.config["PRIVACY_OPERATOR"] = os.getenv("PRIVACY_OPERATOR_NAME", app.config["APP_NAME"])
     app.config["PRIVACY_CONTACT_EMAIL"] = os.getenv("PRIVACY_CONTACT_EMAIL", "").strip()
     app.config["PUBLIC_BASE_URL"] = os.getenv(
