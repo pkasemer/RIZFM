@@ -19,6 +19,9 @@ def create_app():
 
     app.config["SQLALCHEMY_DATABASE_URI"] = db_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    if db_path.startswith("sqlite"):
+        # The API and the loudness worker both write to this file; wait for a lock instead of failing.
+        app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"connect_args": {"timeout": 30}}
 
     # Shown on the public privacy / data-deletion pages.
     app.config["APP_NAME"] = os.getenv("APP_NAME", "SOFIZ FM")
@@ -53,6 +56,10 @@ def create_app():
     # Register API routes
     from .routes import api
     app.register_blueprint(api, url_prefix="/api/v1")
+
+    from .cli import loudness_cli, streams_cli
+    app.cli.add_command(loudness_cli)
+    app.cli.add_command(streams_cli)
 
     # Public pages required for store submission: /privacy and /delete-data
     from .pages import pages

@@ -1,8 +1,9 @@
 from flask import Blueprint, request
-from sqlalchemy import or_
+from sqlalchemy import or_, text
 from . import db
-from .models import Station
-from .services.stream_checker import check_stream
+from .models import LoudnessMeasurement, Station, StreamCheck, iso_utc
+from .services import health
+from .services.loudness import reset_loudness
 
 api = Blueprint("api", __name__)
 
@@ -33,7 +34,13 @@ def list_stations():
         query = query.filter(Station.country.ilike(country))
 
     if genre:
-        query = query.filter(Station.genres.contains([genre]))
+        # `genres` is a JSON list. Match one element of it (case-insensitively) with SQLite's
+        # json_each. The earlier `genres.contains([genre])` was a substring match on the JSON text,
+        # so it only found stations whose *only* genre was the one asked for.
+        query = query.filter(
+            text("EXISTS (SELECT 1 FROM json_each(station.genres) "
+                 "WHERE json_each.value = :genre COLLATE NOCASE)").bindparams(genre=genre)
+        )
 
     if featured is not None:
         query = query.filter(Station.is_featured == (featured.lower() == "true"))
@@ -111,9 +118,21 @@ def update_station(station_id):
         "bitrate": "bitrate", "website": "website", "logoUrl": "logo_url",
         "isFeatured": "is_featured", "isActive": "is_active"
     }
+    old_stream_url = station.stream_url
+    was_active = station.is_active
     for key, attr in mapping.items():
         if key in data:
             setattr(station, attr, data[key])
+
+    # The loudness worker measures a changed stream within about a minute. Readings taken on
+    # the old stream would be wrong for the new one, so they are dropped.
+    if station.stream_url != old_stream_url:
+        reset_loudness(station)
+        # Likewise the health worker checks the new URL on its next tick (within seconds).
+        health.reset_health(station)
+    elif station.is_active and not was_active:
+        station.loudness_pending = True
+        station.health_next_check_at = None
 
     db.session.commit()
     return station.to_dict()
@@ -123,9 +142,48 @@ def delete_station(station_id):
     station = db.session.get(Station, station_id)
     if not station:
         return error("Station not found", 404)
+    LoudnessMeasurement.query.filter_by(station_id=station_id).delete(synchronize_session=False)
+    StreamCheck.query.filter_by(station_id=station_id).delete(synchronize_session=False)
     db.session.delete(station)
     db.session.commit()
     return {"message": "Station deleted", "id": station_id}
+
+@api.get("/stations/<station_id>/loudness")
+def station_loudness(station_id):
+    """Read-only loudness detail for debugging an odd value: the published number and the
+    raw readings (newest first) it was calculated from."""
+    station = db.session.get(Station, station_id)
+    if not station:
+        return error("Station not found", 404)
+
+    readings = (
+        LoudnessMeasurement.query.filter_by(station_id=station_id)
+        .order_by(LoudnessMeasurement.measured_at.desc(), LoudnessMeasurement.id.desc())
+        .limit(50)
+        .all()
+    )
+    return {
+        "id": station.id,
+        "loudnessLufs": station.loudness_lufs,
+        "loudnessMeasuredAt": iso_utc(station.loudness_measured_at),
+        "pending": bool(station.loudness_pending),
+        "consecutiveFailures": station.loudness_fail_streak or 0,
+        "history": [{"lufs": r.lufs, "measuredAt": iso_utc(r.measured_at)} for r in readings],
+    }
+
+@api.get("/stations/<station_id>/health")
+def station_health(station_id):
+    """Read-only stream health detail: the current status plus the last 50 probes (newest first)."""
+    station = db.session.get(Station, station_id)
+    if not station:
+        return error("Station not found", 404)
+    return health.health_detail(station)
+
+@api.get("/streams/health")
+def streams_health():
+    """Admin table: one row per station (offline first) with status, last online, last error,
+    30-day uptime and whether the stream is plain http (which iPhones block by default)."""
+    return {"data": health.health_table()}
 
 @api.post("/stations/<station_id>/check")
 def check_one_station(station_id):
@@ -133,22 +191,22 @@ def check_one_station(station_id):
     if not station:
         return error("Station not found", 404)
 
-    reachable = check_stream(station)
-    db.session.commit()
+    result = health.check_station(station)
     return {
         "id": station.id,
-        "reachable": reachable,
-        "lastChecked": station.last_checked.isoformat()
+        "reachable": result.ok,
+        "streamStatus": station.stream_status,
+        "error": result.error,
+        "lastChecked": iso_utc(station.last_checked)
     }
 
 @api.post("/stations/check-all")
 def check_all_stations():
     stations = Station.query.filter_by(is_active=True).all()
-    results = []
+    with_stream = [s for s in stations if s.stream_url]
+    results = {sid: r.ok for sid, r in health.probe_stations(with_stream).items()}
     for station in stations:
-        results.append({
-            "id": station.id,
-            "reachable": check_stream(station)
-        })
-    db.session.commit()
-    return {"data": results, "checked": len(results)}
+        if not station.stream_url:  # nothing to probe: counts as unreachable, as before
+            results[station.id] = health.check_station(station).ok
+    data = [{"id": s.id, "reachable": results.get(s.id, False)} for s in stations]
+    return {"data": data, "checked": len(data)}

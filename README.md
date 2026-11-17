@@ -13,8 +13,9 @@ A small Dockerized Flask API for a Uganda online-radio directory and player back
 - Pagination
 - Featured stations
 - CRUD endpoints
-- Stream health checking
 - Bulk stream checking
+- Stream health checks (real audio probe, hysteresis, status + uptime, optional chat alerts)
+- Station loudness measurement (ffmpeg, scheduled worker) so the app can match volume between stations
 - Persistent database volume
 - Gunicorn production server
 

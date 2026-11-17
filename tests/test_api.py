@@ -226,3 +226,19 @@ def test_us_hip_hop_and_tennessee_country_stations():
     # The genre filter finds them too.
     country = client.get("/api/v1/stations?genre=Country&limit=100").json["data"]
     assert tennessee_country <= {s["id"] for s in country}
+
+
+def test_genre_filter_matches_any_genre_of_a_station_not_only_a_sole_genre():
+    client = create_app().test_client()
+
+    def ids(genre):
+        data = client.get("/api/v1/stations", query_string={"genre": genre, "limit": 100}).json["data"]
+        return {s["id"] for s in data}
+
+    # capital-fm is ["Pop", "Adult Contemporary", "Talk"]; wsm-650 is ["Country", "Classic Country"].
+    assert "capital-fm" in ids("Pop") and "capital-fm" in ids("Talk") and "capital-fm" in ids("Adult Contemporary")
+    assert "wsm-650" in ids("Country") and "wsm-650" in ids("Classic Country")
+    assert "capital-fm" in ids("pop")  # case-insensitive
+    assert ids("Count") == set()       # a part of a genre name is not a match
+    assert ids("Polka") == set()
+    assert ids("Music") > {"beat-fm", "galaxy-fm"}  # many stations list Music among several genres
