@@ -255,3 +255,32 @@ def test_genre_filter_matches_any_genre_of_a_station_not_only_a_sole_genre():
     assert ids("Count") == set()       # a part of a genre name is not a match
     assert ids("Polka") == set()
     assert ids("Music") > {"beat-fm", "galaxy-fm"}  # many stations list Music among several genres
+
+
+def test_o_radio_is_live_with_a_stream_that_does_not_depend_on_an_expiring_token():
+    client = create_app().test_client()
+
+    station = client.get("/api/v1/stations/o-radio").json
+    assert station["name"] == "O Radio" and station["city"] == "Lira" and station["country"] == "Uganda"
+    assert station["languages"] == ["Luo"]
+    assert station["frequency"] is None  # internet-only: no FM frequency
+    assert station["logoUrl"].endswith("/static/logos/o-radio.png")
+    assert client.get("/static/logos/o-radio.png").status_code == 200
+
+    # The link the station gives out has "?rj-ttl=5&rj-tok=..."; that token expires, so it must not be stored.
+    assert station["streamUrl"] == "https://stream.radiojar.com/xwy6byka3f3vv"
+    assert station["streamType"] == "mp3" and station["bitrate"] == 128
+
+    assert station["isActive"] is True
+    active = {s["id"] for s in client.get("/api/v1/stations?active=true&limit=100").json["data"]}
+    assert "o-radio" in active
+    assert [s["id"] for s in client.get("/api/v1/stations?city=Lira").json["data"]] == ["o-radio"]
+
+
+def test_no_seeded_stream_url_carries_an_expiring_token():
+    from app.seed import STATIONS
+
+    # Zeno (zt=) and Radiojar (rj-tok=) links copied from a player stop working after a short time.
+    for item in STATIONS:
+        url = item.get("streamUrl") or ""
+        assert "zt=" not in url and "rj-tok" not in url and "rj-ttl" not in url, item["id"]

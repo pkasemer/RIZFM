@@ -178,6 +178,15 @@ STATIONS = [
         "streamUrl": "https://dc4.serverse.com/proxy/ccmxrgub/stream", "streamType": "mp3",
         "bitrate": 64
     },
+    # O Radio: an internet-only station in Lira, Northern Uganda, broadcasting in Luo (no FM frequency).
+    # The stream is on Radiojar. The link the station gives out carries "?rj-ttl=5&rj-tok=..." but that
+    # token is only for the station's own player and expires; the plain address works without it.
+    {
+        "id": "o-radio", "name": "O Radio", "city": "Lira",
+        "genres": ["Afropop", "Talk"], "languages": ["Luo"],
+        "streamUrl": "https://stream.radiojar.com/xwy6byka3f3vv", "streamType": "mp3",
+        "bitrate": 128
+    },
     # --- International favourites (every other station defaults to country "Uganda"). ---
     {
         "id": "heart-uk", "name": "Heart UK", "frequency": "96-107 FM", "country": "United Kingdom",

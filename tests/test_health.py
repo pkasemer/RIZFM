@@ -13,7 +13,11 @@ from app import create_app, db
 from app import health_worker as worker
 from app.models import Station, StreamCheck, iso_utc
 from app.services import alerts, health
+from app.seed import STATIONS
 from app.services.health import ProbeResult
+
+TOTAL_STATIONS = len(STATIONS)
+ACTIVE_STATIONS = len([s for s in STATIONS if s.get("isActive", True)])  # the ones that are checked
 
 OK = ProbeResult(True, response_ms=120)
 AUDIO = b"\xff\xfb\x90\x00" * 6000  # 24 KB that looks like MP3 frames
@@ -462,7 +466,7 @@ def test_stations_are_checked_when_new_when_due_and_not_before():
     app = create_app()
     with app.app_context():
         total = len(health.checkable_stations())
-        assert total == 39  # nothing has been checked: everything is due, straight away
+        assert total == ACTIVE_STATIONS  # nothing has been checked: everything is due, straight away
 
         health.apply_result(kfm(), OK, now=datetime.now(timezone.utc))
         assert "kfm" not in {s.id for s in health.checkable_stations()}  # next check is in 5 minutes
@@ -516,18 +520,19 @@ def test_probing_never_runs_more_than_eight_at_once():
 
     with app.app_context():
         results = health.probe_stations(health.checkable_stations(), probe=fake)
-        assert len(results) == 39 and state["max"] <= health.MAX_PARALLEL == 8
-        assert {s.stream_status for s in Station.query.all()} == {"online"}
+        assert len(results) == ACTIVE_STATIONS and state["max"] <= health.MAX_PARALLEL == 8
+        # every active station was probed; an inactive one would be left alone
+        assert {s.stream_status for s in Station.query.filter_by(is_active=True)} == {"online"}
 
 
 def test_the_worker_checks_what_is_due_and_leaves_the_rest(monkeypatch):
     app = create_app()
     monkeypatch.setattr(health, "probe_stream", lambda url: OK)
     with app.app_context():
-        assert len(worker.run_due()) == 39      # first pass: everything is new
+        assert len(worker.run_due()) == ACTIVE_STATIONS  # first pass: everything is new
         assert worker.run_due() == {}           # nothing is due again for 5 minutes
         later = datetime.now(timezone.utc) + timedelta(minutes=6)
-        assert len(worker.run_due(now=later)) == 39
+        assert len(worker.run_due(now=later)) == ACTIVE_STATIONS
 
 
 def test_the_worker_survives_a_failing_pass_and_stops_when_asked(monkeypatch):
@@ -631,7 +636,7 @@ def test_admin_table_lists_offline_first_and_flags_plain_http_streams():
             health.apply_result(db.session.get(Station, "galaxy-fm"), fail("not_audio"), now=at(minute))
         health.apply_result(kfm(), OK, now=at(0))
     rows = app.test_client().get("/api/v1/streams/health").json["data"]
-    assert len(rows) == 39
+    assert len(rows) == TOTAL_STATIONS  # every station, inactive ones included (the admin table is the whole catalogue)
     assert rows[0]["id"] == "galaxy-fm" and rows[0]["streamStatus"] == "offline" and rows[0]["lastError"] == "not_audio"
     by_id = {r["id"]: r for r in rows}
     assert by_id["kfm"]["httpOnly"] is True and by_id["galaxy-fm"]["httpOnly"] is False  # https
@@ -651,7 +656,7 @@ def test_manual_check_endpoints_use_the_same_probe_and_rules(monkeypatch):
     assert bad["streamStatus"] == "unknown"  # one failure does not change the status
 
     everything = client.post("/api/v1/stations/check-all").json
-    assert everything["checked"] == 39
+    assert everything["checked"] == ACTIVE_STATIONS
     reachable = {row["id"]: row["reachable"] for row in everything["data"]}
     assert reachable["kfm"] is True and reachable["xfm"] is False
     assert client.post("/api/v1/stations/nope/check").status_code == 404
